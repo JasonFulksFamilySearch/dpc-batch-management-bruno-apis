@@ -1,0 +1,55 @@
+meta {
+  name: 14. Mark Batch Complete
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{domain}}/batch/markComplete/{{batchId}}?cisUserId={{cisUserId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  ~requestId: {{requestId}}
+}
+
+docs {
+  Marks the batch with the given batch ID as complete (MARKED_COMPLETE state).
+  The batch must be associated with the cisUserId provided.
+  This results in the batch's state being updated to MARKED_COMPLETE in the database
+  and the S3 batch deliverable being deleted.
+
+  **Path Parameters:**
+  - `batchId` (required) - Batch ID
+
+  **Query Parameters:**
+  - `cisUserId` (required) - CIS user ID completing the batch
+  - `requestId` (optional) - Request ID
+
+  **Returns:** Success message
+
+  **Responses:**
+  - 200 OK - Batch successfully marked complete
+  - 403 Forbidden - Batch not tied to cisUserId
+  - 404 Not Found - Batch not found
+
+  **Used by:** Delivery Service
+
+  **Note:** MARKED_COMPLETE state essentially means "cancelled"
+}
+
+vars:pre-request {
+  batchId: 12345
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return success message", function() {
+    expect(res.body).to.include("Successfully marked batch complete");
+  });
+}

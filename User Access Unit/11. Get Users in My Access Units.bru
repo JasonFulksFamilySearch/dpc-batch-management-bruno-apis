@@ -1,0 +1,60 @@
+meta {
+  name: 11. Get Users in My Access Units
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{domain}}/userAccessUnit/me/accessUnitUsers?accessUnitId={{accessUnitId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  accessUnitId: {{accessUnitId}}
+}
+
+docs {
+  ## Get Users in My Access Units
+
+  Retrieves users in the current user's access units. Optionally filter by a specific access unit.
+
+  **Note:** This is a "self-service" endpoint that does not require admin permissions.
+
+  ## Query Parameters
+
+  **accessUnitId** (optional, number): Filter to a specific access unit
+  - If omitted, returns users across all of the current user's access units
+
+  ## Response
+
+  Returns an array of `AccessUnitUserDto` objects (200 OK)
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - **No special permissions required** (self-service endpoint)
+
+  ## Notes
+
+  - Only returns users in access units the current user has access to
+  - Useful for collaboration features
+  - Can help identify who else has access to shared resources
+
+  ## Use Cases
+
+  - Show collaborators in UI
+  - Display team members with shared access
+  - Identify who can access shared delivery requests
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

@@ -1,0 +1,50 @@
+meta {
+  name: 01. Get Access Units for User
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{domain}}/userAccessUnit/id
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "cisUserId": "{{cisUserId}}"
+  }
+}
+
+docs {
+  ## Get Access Units for User
+
+  Retrieves all access units assigned to a specific CIS user.
+
+  **Note:** Uses GET with JSON body (non-standard but supported).
+
+  ## Request Body
+
+  **cisUserId** (required, string): CIS user ID to get access units for
+  - Format: "cis.user.XXXX-####"
+
+  ## Response
+
+  Returns an array of `AccessUnitInfo` objects (200 OK)
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

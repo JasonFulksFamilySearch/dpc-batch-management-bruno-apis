@@ -1,0 +1,48 @@
+meta {
+  name: 02. Get Delivery Items List
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{domain}}/deliveryitem/list?batchId={{batchId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  batchId: {{batchId}}
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Get Delivery Items List
+
+  Retrieves a sorted list of all delivery items for a specific batch and request.
+
+  ## Query Parameters
+
+  **batchId** (required, string): The batch ID to get items for
+
+  **requestId** (required, string): The delivery request ID
+
+  ## Response
+
+  Returns a JSON array of `DeliveryItemInfo` objects (200 OK)
+
+  The list is sorted by item order or name.
+
+  ## Authentication
+
+  Requires active session
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

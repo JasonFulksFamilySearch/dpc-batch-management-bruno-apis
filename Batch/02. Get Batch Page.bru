@@ -1,0 +1,60 @@
+meta {
+  name: 02. Get Batch Page
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{domain}}/batch/page?cisUserId={{cisUserId}}&page=0&size=20
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  page: 0
+  size: 20
+  ~startDate: 2024-01-01T00:00:00
+  ~endDate: 2024-12-31T23:59:59
+  ~requestId:
+  ~batchId:
+  ~state: READY_FOR_DELIVERY
+  ~contentType: RECORDS
+  ~accessUnitId:
+  ~errorMessage:
+  ~sort: batchId,asc
+}
+
+docs {
+  Gets a paginated list of batches for a given cisUserId.
+
+  **Query Parameters:**
+  - `cisUserId` (required) - CIS user ID
+  - `page` - Page number (0-indexed)
+  - `size` - Number of items per page
+  - `startDate` - Start date in ISO 8601 format (createdDate >= startDate)
+  - `endDate` - End date in ISO 8601 format (createdDate <= endDate)
+  - `requestId` - Filter by request ID
+  - `batchId` - Filter by batch ID
+  - `state` - Filter by batch state (QUEUED, VALIDATING, PREPARING, READY_FOR_DELIVERY, DELIVERED, MARKED_COMPLETE, DOWNLOAD_RESET)
+  - `contentType` - Filter by content type (IMAGES, RECORDS)
+  - `accessUnitId` - Filter by access unit ID
+  - `errorMessage` - Filter by error message
+  - `sort` - Sort criteria (e.g., "batchId,asc" or "created,desc")
+
+  **Returns:** Page<BatchListEntry>
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return paginated results", function() {
+    expect(res.body).to.have.property('content');
+    expect(res.body).to.have.property('pageable');
+    expect(res.body).to.have.property('totalElements');
+    expect(res.body).to.have.property('totalPages');
+    expect(res.body.content).to.be.an('array');
+  });
+}

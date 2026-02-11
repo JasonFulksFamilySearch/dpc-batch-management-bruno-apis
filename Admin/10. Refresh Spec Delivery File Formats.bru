@@ -1,0 +1,55 @@
+meta {
+  name: 10. Refresh Spec Delivery File Formats
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{domain}}/admin/refresh/all/specDeliveryFileFormat
+  body: json
+  auth: inherit
+}
+
+body:json {
+  [
+    "{{requestId}}",
+    "REQ-123",
+    "REQ-456"
+  ]
+}
+
+docs {
+  ## Refresh Spec Delivery File Formats
+
+  Refreshes file formats for spec deliveries for the provided request IDs.
+
+  ## Request Body
+
+  Array of request IDs (strings) to refresh
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Update file format metadata
+  - Fix spec delivery configuration
+  - Bulk update after spec changes
+
+  ## Notes
+
+  - Processes requests in batch
+  - Updates spec delivery file format metadata
+  - May trigger reprocessing
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

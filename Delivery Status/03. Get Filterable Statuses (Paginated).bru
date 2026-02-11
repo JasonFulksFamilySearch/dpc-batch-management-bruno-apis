@@ -1,0 +1,96 @@
+meta {
+  name: 03. Get Filterable Statuses (Paginated)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{domain}}/delivery/status/all/filterable
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "cisUserId": "{{cisUserId}}",
+    "accessUnitId": 1,
+    "requestId": "{{requestId}}",
+    "searchTerm": "",
+    "requestType": "RECORDS_EXCHANGE",
+    "requestStatus": ["IN_PROGRESS", "COMPLETED"],
+    "dateCreatedLastDays": 30,
+    "requestedBy": ["cis.user.AAAA-1234"],
+    "downloadedBy": ["cis.user.AAAA-1234"],
+    "extendedFields": true,
+    "page": 0,
+    "pageSize": 20,
+    "sortBy": "created",
+    "sortDirection": "DESC"
+  }
+}
+
+docs {
+  ## Get Filterable Statuses (Paginated)
+
+  Retrieves paginated and filterable delivery request statuses with advanced filtering options.
+
+  ## Request Body Fields
+
+  **cisUserId** (required, string): CIS user ID to get statuses for
+
+  **accessUnitId** (optional, number): Filter by access unit ID
+
+  **requestId** (optional, string): Filter by specific request ID
+
+  **searchTerm** (optional, string): Search term for text search
+
+  **requestType** (optional, string): Filter by request type
+
+  **requestStatus** (optional, array): Filter by request status values
+  - Array of status strings (IN_PROGRESS, COMPLETED, etc.)
+
+  **dateCreatedLastDays** (optional, number): Filter to requests created in last N days
+
+  **requestedBy** (optional, array): Filter by requester CIS user IDs
+
+  **downloadedBy** (optional, array): Filter by downloader CIS user IDs
+
+  **extendedFields** (optional, boolean): Include extended fields
+  - Default: false
+
+  **page** (optional, number): Page number (0-indexed)
+  - Default: 0
+
+  **pageSize** (optional, number): Number of results per page
+  - Default: 20
+
+  **sortBy** (optional, string): Field to sort by
+
+  **sortDirection** (optional, string): Sort direction
+  - Values: ASC, DESC
+
+  ## Response
+
+  Returns a `PaginatedContentOutDTO<DeliveryRequestStatusWithState>` object with:
+  - **content**: Array of status objects
+  - **page**: Current page number
+  - **pageSize**: Results per page
+  - **totalElements**: Total matching results
+  - **totalPages**: Total pages
+
+  ## Authentication
+
+  Requires active session with access validation
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains paginated data", function() {
+    expect(res.body).to.be.an('object');
+    expect(res.body.content).to.be.an('array');
+    expect(res.body.page).to.be.a('number');
+  });
+}

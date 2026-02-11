@@ -1,0 +1,57 @@
+meta {
+  name: 06. Set Thread Pool Sizes
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{domain}}/admin/thread_pool_sizes?corePoolSize=10&maxPoolSize=20
+  body: none
+  auth: inherit
+}
+
+params:query {
+  corePoolSize: 10
+  maxPoolSize: 20
+}
+
+docs {
+  ## Set Thread Pool Sizes
+
+  Changes async thread pool core and max pool sizes dynamically.
+
+  ## Query Parameters
+
+  **corePoolSize** (required, number): New core pool size
+  - Minimum number of threads to keep alive
+
+  **maxPoolSize** (required, number): New maximum pool size
+  - Maximum number of threads allowed
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Notes
+
+  - Changes take effect immediately
+  - Use with caution in production
+  - Monitor thread pool after changes
+  - maxPoolSize must be >= corePoolSize
+
+  ## Use Cases
+
+  - Adjust to changing load
+  - Performance tuning
+  - Resource management
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

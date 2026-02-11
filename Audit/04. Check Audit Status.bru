@@ -1,0 +1,48 @@
+meta {
+  name: 04. Check Audit Status
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{domain}}/audit/dbS3/status
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Check Audit Status
+
+  Checks whether the DB-S3 audit process is currently running.
+
+  ## Response
+
+  Returns plain text status (200 OK)
+  - Indicates if audit is running or idle
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Monitor audit progress
+  - Prevent concurrent audit runs
+  - Verify audit completion
+  - Troubleshoot long-running audits
+
+  ## Notes
+
+  - Call this before starting a new audit
+  - Prevents duplicate concurrent audits
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a string", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

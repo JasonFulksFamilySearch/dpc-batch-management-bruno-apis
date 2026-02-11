@@ -1,0 +1,55 @@
+meta {
+  name: 09. Delete Expired Batches
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{domain}}/expiration/deleteExpired
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Delete Expired Batches
+
+  Deletes expired batches and their deliverables.
+
+  **⚠️ Warning:** This is a destructive operation that permanently removes expired batches.
+
+  ## Response
+
+  Returns a list of deleted batch IDs (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Side Effects
+
+  - Deletes expired batches from database
+  - Removes associated S3 deliverables
+  - Cannot be undone
+
+  ## Use Cases
+
+  - Automated cleanup of expired batches
+  - Free up storage space
+  - Compliance with retention policies
+
+  ## Notes
+
+  - Only deletes batches past their expiration date
+  - Returns list of deleted batch IDs
+  - Monitor logs during execution
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array of deleted batch IDs", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

@@ -1,0 +1,56 @@
+meta {
+  name: 06. Get Access Unit by Name (Query)
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{domain}}/accessUnit/name?accessUnitName=Access Unit Name
+  body: none
+  auth: inherit
+}
+
+params:query {
+  accessUnitName: Access Unit Name
+}
+
+docs {
+  ## Get Access Unit by Name (Query Parameter)
+
+  Retrieves a complete access unit by its name using a query parameter.
+
+  ## Query Parameters
+
+  **accessUnitName** (required, string): The access unit name to look up
+
+  ## Response
+
+  Returns an `AccessUnit` object (200 OK)
+
+  ## Error Responses
+
+  - **404 Not Found**: Access unit with that name does not exist
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+
+  ## Notes
+
+  - Alternative to the path-based `/findId/{name}` endpoint
+  - Returns full object instead of just the ID
+  - Name matching is exact (case-sensitive)
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains access unit", function() {
+    expect(res.body).to.be.an('object');
+    expect(res.body.accessUnitName).to.be.a('string');
+  });
+}

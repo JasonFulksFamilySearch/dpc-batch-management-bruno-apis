@@ -1,0 +1,52 @@
+meta {
+  name: 05. Set Batch Expiration
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{domain}}/expiration/batch?batchId={{batchId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  batchId: {{batchId}}
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Set Batch Expiration
+
+  Sets the expiration date for a specific batch to 6 months from today.
+
+  ## Query Parameters
+
+  **batchId** (required, string): The batch ID to set expiration for
+
+  **requestId** (required, string): The delivery request ID
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid input
+  - **404 Not Found**: Batch not found
+
+  ## Authentication
+
+  Requires active session
+
+  ## Notes
+
+  - Expiration is automatically set to 6 months from today
+  - Overwrites any existing expiration date
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

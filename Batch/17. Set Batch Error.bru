@@ -1,0 +1,53 @@
+meta {
+  name: 17. Set Batch Error
+  type: http
+  seq: 17
+}
+
+post {
+  url: {{domain}}/batch/setError?batchId={{batchId}}&requestId={{requestId}}&batchError=ERROR
+  body: text
+  auth: inherit
+}
+
+params:query {
+  batchId: {{batchId}}
+  requestId: {{requestId}}
+  batchError: ERROR
+}
+
+body:text {
+  Optional error message describing what went wrong
+}
+
+docs {
+  Sets an error on a batch and sends notifications for ARK requests.
+
+  **Query Parameters:**
+  - `batchId` (required) - Batch ID
+  - `requestId` (required) - Request ID
+  - `batchError` (required) - Error type
+
+  **Valid BatchError values:**
+  - OK - No error
+  - ERROR - Error occurred
+  - WARNING - Warning state
+  - UNKNOWN - Unknown error state
+
+  **Request Body (optional):** String message describing the error
+
+  **Side Effects:**
+  - Updates batch error status in database
+  - Sends SNS notification to ARK with RECORD_ERROR status
+  - Posts DOWNLOAD_REVIEW_ERROR snippet for ARK requests
+}
+
+vars:pre-request {
+  batchId: 12345
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

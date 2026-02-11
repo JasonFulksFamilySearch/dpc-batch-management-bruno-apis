@@ -1,0 +1,53 @@
+meta {
+  name: 13. Get Delivery Requests by Project (v2)
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{domain}}/deliveryRequest/project/v2?projectId={{projectId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  projectId: {{projectId}}
+}
+
+docs {
+  ## Get Delivery Requests by Project (v2)
+
+  Returns all delivery requests for a given project in v2 format where the access unit
+  is returned as a numeric **ID** in the `requestForAccessUnitId` field.
+
+  ## Query Parameters
+
+  **projectId** (required, string): The project identifier to filter by
+
+  ## Response
+
+  Returns an array of `DeliveryRequestInfoV2` objects with:
+  - **requestForAccessUnitId**: Access unit numeric ID
+  - V2 enum types (RequestType, etc.)
+  - One entry per delivery request in the project
+
+  ## Error Responses
+
+  - **IllegalArgumentException**: Invalid project ID (propagated from DAO)
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+
+  test("Each request has requestForAccessUnitId field", function() {
+    if (res.body.length > 0) {
+      expect(res.body[0].requestForAccessUnitId).to.be.a('number');
+    }
+  });
+}

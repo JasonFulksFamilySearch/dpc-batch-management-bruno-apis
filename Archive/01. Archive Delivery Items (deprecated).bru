@@ -1,0 +1,44 @@
+meta {
+  name: 01. Archive Delivery Items (deprecated)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{domain}}/archive/deliveryItems?batchId={{batchId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  batchId: {{batchId}}
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Archive Delivery Items (DEPRECATED)
+
+  ⚠️ **DEPRECATED**: This endpoint is deprecated and may be removed in a future release.
+
+  Archives delivery items for a specific batch and request ID.
+
+  ## Query Parameters
+
+  **batchId** (required, string): The batch ID to archive items for
+
+  **requestId** (required, string): The delivery request ID
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

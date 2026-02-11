@@ -1,0 +1,71 @@
+meta {
+  name: 01. Store Delivery Request Groups
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{domain}}/deliveryRequest/store/groups
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "requestForAccessUnitId": 12345,
+    "groupIdList": ["group-123", "group-456"],
+    "requestId": "REQ-{{$timestamp}}",
+    "rmsProjectId": "PROJ-123",
+    "requesterCisId": "cis.user.AAAA-1234",
+    "contentType": "RECORDS"
+  }
+}
+
+docs {
+  ## Store Delivery Request Groups
+
+  Stores a delivery request with its associated group IDs and generates batches for each group.
+
+  **Note:** This endpoint accepts both v2 (requestForAccessUnitId) and legacy v1 (requestFor) formats.
+  If both are provided, the v2 format (ID) takes precedence.
+
+  ## Request Body Fields
+
+  **requestForAccessUnitId** (required, number): Numeric ID of the access unit requesting access
+  - This is the v2 field that replaces the legacy v1 "requestFor" (name) field
+  - Must be a valid access unit ID
+
+  **groupIdList** (required, array): Array of group IDs to include in the delivery
+  - Each group will generate one batch in QUEUED state
+
+  **requestId** (required, string): Unique identifier for this delivery request
+
+  **rmsProjectId** (optional, string): RMS project identifier
+
+  **requesterCisId** (optional, string): CIS user ID of the requester
+  - Format: "cis.user.XXXX-####"
+  - Defaults to "Unknown" if not provided
+
+  **contentType** (required, string): Type of content being requested
+  - Valid values: RECORDS, IMAGES, etc. (from BatchContentType enum)
+
+  ## Response
+
+  Returns "Received delivery request: {request details}" on success (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Missing required field or unknown access unit
+  - **500 Internal Server Error**: Unexpected error during processing
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+    expect(res.body).to.include('Received delivery request');
+  });
+}

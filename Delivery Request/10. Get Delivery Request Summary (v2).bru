@@ -1,0 +1,60 @@
+meta {
+  name: 10. Get Delivery Request Summary (v2)
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{domain}}/deliveryRequest/summary/v2?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Get Delivery Request Summary (v2)
+
+  Returns the v2 delivery request summary where the access unit is returned as a numeric **ID**
+  in the `requestForAccessUnitId` field. The group count is populated but the actual group list
+  is not included.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to retrieve
+
+  ## Response
+
+  Returns a `DeliveryRequestInfoV2` object with:
+  - **requestForAccessUnitId**: Access unit numeric ID
+  - **requestType**: Request type enum
+  - **projectId**: Project identifier (if set)
+  - **shortDescription**: Short description (if set)
+  - **notes**: Notes (if set)
+  - **groupCount**: Number of batches for this request
+  - Group list is NOT included (matches prior behavior)
+
+  ## Error Responses
+
+  - **IllegalArgumentException**: Request ID not found (returns 500 with message "RequestId not found: {id}")
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains delivery request info", function() {
+    expect(res.body).to.be.an('object');
+    expect(res.body.requestForAccessUnitId).to.be.a('number');
+    expect(res.body.groupCount).to.be.a('number');
+  });
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setVar("accessUnitId", res.body.requestForAccessUnitId);
+  }
+}

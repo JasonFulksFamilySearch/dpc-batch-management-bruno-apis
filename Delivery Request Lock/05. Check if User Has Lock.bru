@@ -1,0 +1,55 @@
+meta {
+  name: 05. Check if User Has Lock
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{domain}}/deliveryRequest/lock/hasLock?cisUserId={{cisUserId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Check if User Has Lock
+
+  Checks whether a specific user holds the lock on a delivery request.
+
+  ## Query Parameters
+
+  **cisUserId** (required, string): CIS user ID to check
+  - Format: "cis.user.XXXX-####"
+
+  **requestId** (required, string): The delivery request ID to check
+
+  ## Response
+
+  Returns boolean (200 OK)
+  - `true`: The specified user holds the lock
+  - `false`: The specified user does not hold the lock (or request is unlocked)
+
+  ## Authentication
+
+  Requires active session with access validation
+
+  ## Use Cases
+
+  - Verify user owns the lock before allowing operations
+  - Check if current user can proceed with download
+  - Validate lock ownership before releasing
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a boolean", function() {
+    expect(res.body).to.be.a('boolean');
+  });
+}

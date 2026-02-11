@@ -1,0 +1,45 @@
+meta {
+  name: 06. Unreserve Entire Request
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{domain}}/deliveryRequest/unreserve/request?cisUserId={{cisUserId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Unreserve Entire Request
+
+  Unreserves ALL batches for a delivery request for a specific user. This releases all
+  reservations made by this user for this request.
+
+  ## Query Parameters
+
+  **cisUserId** (required, string): CIS user ID whose reservations should be released
+  - Format: "cis.user.XXXX-####"
+
+  **requestId** (required, string): The delivery request ID to unreserve
+
+  ## Response
+
+  Returns void on success (200 OK)
+
+  ## Error Responses
+
+  - **500 Internal Server Error**: Failed to unreserve the request
+    - Response includes detailed error message with context
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

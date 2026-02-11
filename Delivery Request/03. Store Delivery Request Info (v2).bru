@@ -1,0 +1,71 @@
+meta {
+  name: 03. Store Delivery Request Info (v2)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{domain}}/deliveryRequest/store/info/v2
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "requestForAccessUnitId": 12345,
+    "requestType": "RECORDS_EXCHANGE",
+    "projectId": "PROJ-123",
+    "shortDescription": "Test delivery request",
+    "notes": "Created via Bruno"
+  }
+}
+
+docs {
+  ## Store Delivery Request Info (v2)
+
+  Stores a v2 delivery request where the access unit is specified by numeric **ID** in the
+  `requestForAccessUnitId` field. This is the preferred endpoint for new integrations.
+
+  ## Request Body Fields
+
+  **requestForAccessUnitId** (required, number): Numeric ID of the access unit
+  - Get available units from: /deliveryRequest/authorizedAccessUnits/details (if that endpoint exists)
+  - This replaces the legacy v1 "requestFor" (name) field
+
+  **requestType** (optional, string): Request type
+  - Valid values: RECORDS_EXCHANGE, MANUAL, INLINE, RESERVED
+  - Stored as enum in the database
+
+  **projectId** (optional, string): Project identifier
+  - Max 20 characters
+
+  **shortDescription** (optional, string): Short description of the request
+  - Max 255 characters
+
+  **notes** (optional, string): Additional notes
+  - Max 250 characters
+
+  ## Response
+
+  Returns the generated request ID as a string (200 OK)
+
+  ## Error Responses
+
+  - **500 Internal Server Error**: Unexpected error during storage
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains request ID", function() {
+    expect(res.body).to.be.a('string');
+  });
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setVar("requestId", res.body);
+  }
+}

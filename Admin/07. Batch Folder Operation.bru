@@ -1,0 +1,52 @@
+meta {
+  name: 07. Batch Folder Operation
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{domain}}/admin/batchFolder
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "operation": "CREATE",
+    "batchId": "{{batchId}}",
+    "requestId": "{{requestId}}"
+  }
+}
+
+docs {
+  ## Batch Folder Operation
+
+  Executes batch folder operations (create, delete, etc.).
+
+  ## Request Body
+
+  **BatchFolderRequest** object containing:
+  - Operation type
+  - Batch identifiers
+  - Additional operation parameters
+
+  ## Response
+
+  Returns operation result (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Manage S3 batch folders
+  - Cleanup operations
+  - Folder structure maintenance
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

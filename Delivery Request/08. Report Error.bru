@@ -1,0 +1,52 @@
+meta {
+  name: 08. Report Error
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{domain}}/deliveryRequest/reportError?requestId={{requestId}}
+  body: text
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+body:text {
+  Error message describing what went wrong
+}
+
+docs {
+  ## Report Error
+
+  Reports an error for a delivery request and deletes its database information.
+  This is a destructive operation that removes both the request and all associated batches.
+
+  **⚠️ WARNING**: This endpoint deletes data permanently. Use with caution.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID that encountered an error
+
+  ## Request Body
+
+  Plain text error message describing the problem
+
+  ## Response
+
+  Returns void (200 OK)
+
+  ## Side Effects
+
+  - Deletes the delivery request row from the database
+  - Deletes all batch rows associated with this request
+  - Error is logged with the provided message
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

@@ -1,0 +1,55 @@
+meta {
+  name: 18. Get Request with Failed Batch (v2)
+  type: http
+  seq: 18
+}
+
+get {
+  url: {{domain}}/deliveryRequest/batch/failed/v2?requestId={{requestId}}&batchId={{batchId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+  batchId: {{batchId}}
+}
+
+docs {
+  ## Get Request with Failed Batch (v2)
+
+  Returns a v2 delivery request containing only failed batches associated with
+  the provided batchId. The access unit is returned as a numeric **ID** in the
+  `requestForAccessUnitId` field.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID whose data should be returned
+
+  **batchId** (required, string): A batch identifier used to locate failed batches
+  - All failed batches matching this ID with ERROR status will be included
+
+  ## Response
+
+  Returns a `DeliveryRequestFromClientV2` object containing:
+  - **requestForAccessUnitId**: Access unit numeric ID
+  - V2 enum types
+  - **groupIdList**: Only failed batches matching the batchId
+  - All other request metadata
+
+  ## Error Responses
+
+  - **IllegalArgumentException**: Request ID not found
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains delivery request", function() {
+    expect(res.body).to.be.an('object');
+    expect(res.body.requestForAccessUnitId).to.be.a('number');
+    expect(res.body.groupIdList).to.be.an('array');
+  });
+}

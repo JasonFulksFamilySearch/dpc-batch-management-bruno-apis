@@ -1,0 +1,48 @@
+meta {
+  name: 08. Start Record Statistics
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{domain}}/admin/stats
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Start Record Statistics
+
+  Starts the record statistics worker to record last month's statistics.
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Side Effects
+
+  - Starts background statistics collection
+  - Processes last month's data
+  - Updates statistics tables
+
+  ## Use Cases
+
+  - Generate monthly reports
+  - Populate analytics data
+  - Historical statistics tracking
+
+  ## Notes
+
+  - Runs asynchronously
+  - May take time for large datasets
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

@@ -1,0 +1,67 @@
+meta {
+  name: 25. Get Smallest Available Batch Size
+  type: http
+  seq: 25
+}
+
+get {
+  url: {{domain}}/deliveryRequest/smallestBatchSize?cisUserId={{cisUserId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Get Smallest Available Batch Size
+
+  Retrieves the size (in bytes) of the smallest available batch for a delivery request.
+  This is useful when determining if any batches are small enough to fit within a user's
+  available capacity.
+
+  ## Query Parameters
+
+  **cisUserId** (required, string): CIS user ID making the request
+  - Format: "cis.user.XXXX-####"
+
+  **requestId** (required, string): The delivery request ID to check
+
+  ## Response
+
+  Returns the smallest batch size as a number (Long) in bytes (200 OK)
+  - Example: 1073741824 (1 GB)
+
+  ## Error Responses
+
+  - **404 Not Found**: No batches found for this request
+    - Response body will be null
+    - Warning logged: "No batches found for Request ID: {id}"
+
+  ## Use Cases
+
+  - Check if any batches can fit in remaining download quota
+  - Determine minimum space requirement for downloading
+  - Used in conjunction with reserve/bytes endpoint when it returns 422 Unprocessable Entity
+}
+
+tests {
+  test("Status is 200 or 404", function() {
+    expect([200, 404]).to.include(res.status);
+  });
+
+  test("Success response is a number", function() {
+    if (res.status === 200) {
+      expect(res.body).to.be.a('number');
+      expect(res.body).to.be.greaterThan(0);
+    }
+  });
+
+  test("Not found response is null", function() {
+    if (res.status === 404) {
+      expect(res.body).to.be.null;
+    }
+  });
+}

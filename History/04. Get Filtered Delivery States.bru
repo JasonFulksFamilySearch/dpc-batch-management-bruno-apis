@@ -1,0 +1,68 @@
+meta {
+  name: 04. Get Filtered Delivery States
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{domain}}/history/deliveryStates
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "requestId": "{{requestId}}",
+    "groupId": "group-123",
+    "pageSize": 20,
+    "pageNumber": 0,
+    "states": ["DOWNLOAD_STARTED", "DOWNLOAD_FINISHED"],
+    "pruneDownloadReset": true
+  }
+}
+
+docs {
+  ## Get Filtered Delivery States
+
+  Retrieves filtered delivery state history with pagination, state filtering, and optional download reset pruning.
+
+  ## Request Body Fields
+
+  **requestId** (optional, string): Filter by delivery request ID
+
+  **groupId** (optional, string): Filter by group/batch ID
+
+  **pageSize** (optional, number): Number of results per page
+
+  **pageNumber** (optional, number): Page number (0-indexed)
+
+  **states** (optional, array): Filter by specific states
+  - Array of state strings to include
+
+  **pruneDownloadReset** (optional, boolean): Remove DOWNLOAD_RESET entries
+  - Default: false
+
+  ## Response
+
+  Returns paginated delivery state history (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Filter history by specific states
+  - Pagination for large result sets
+  - Clean view without reset noise
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an object with results", function() {
+    expect(res.body).to.be.an('object');
+  });
+}

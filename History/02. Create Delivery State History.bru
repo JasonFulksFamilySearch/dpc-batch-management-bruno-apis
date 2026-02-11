@@ -1,0 +1,56 @@
+meta {
+  name: 02. Create Delivery State History
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{domain}}/history?groupId=group-123&requestId={{requestId}}&cisUserId={{cisUserId}}&state=DOWNLOAD_STARTED
+  body: none
+  auth: inherit
+}
+
+params:query {
+  groupId: group-123
+  requestId: {{requestId}}
+  cisUserId: {{cisUserId}}
+  state: DOWNLOAD_STARTED
+}
+
+docs {
+  ## Create Delivery State History
+
+  Creates a delivery state history item with batch/request IDs and state.
+
+  ## Query Parameters
+
+  **groupId** (required, string): Group/batch ID
+
+  **requestId** (required, string): Delivery request ID
+
+  **cisUserId** (required, string): CIS user ID
+  - Format: "cis.user.XXXX-####"
+
+  **state** (required, string): Delivery state to record
+  - Valid values: DOWNLOAD_STARTED, DOWNLOAD_FINISHED, DOWNLOAD_PAUSED, DOWNLOAD_RESUMED, DOWNLOAD_ERRORED, etc.
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Track batch state transitions
+  - Audit trail for deliveries
+  - Monitor download progress
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

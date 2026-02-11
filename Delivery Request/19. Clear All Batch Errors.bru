@@ -1,0 +1,46 @@
+meta {
+  name: 19. Clear All Batch Errors
+  type: http
+  seq: 19
+}
+
+post {
+  url: {{domain}}/deliveryRequest/batches/clear/errors?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Clear All Batch Errors
+
+  Clears all error statuses for all batches in a delivery request. Sets all batches with ERROR status
+  to OK status and clears the delivery request's error status.
+
+  **Note:** This also triggers an asynchronous request status update.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to clear errors for
+
+  ## Response
+
+  Returns void (200 OK)
+
+  ## Side Effects
+
+  - Updates all batches with ERROR status to OK status
+  - Clears error messages for all affected batches
+  - Updates the delivery request error status to OK
+  - Clears the delivery request error message
+  - Triggers async status recalculation for the request
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

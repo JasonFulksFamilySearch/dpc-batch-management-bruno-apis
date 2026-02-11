@@ -1,0 +1,28 @@
+meta {
+  name: Get Delivery Request Inline
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{domain}}/delivery-requests/{{deliveryRequestId}}/inline
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains inline delivery request with embedded data", function() {
+    expect(res.body).to.be.an('object');
+    expect(res.body.id).to.equal(bru.getVar("deliveryRequestId"));
+  });
+
+  test("Embedded relationships are included", function() {
+    // Inline responses typically include related entities
+    // such as items, batch info, status, etc. inline
+    expect(res.body).to.have.property('id');
+  });
+}

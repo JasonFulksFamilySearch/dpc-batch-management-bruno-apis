@@ -1,0 +1,37 @@
+meta {
+  name: 02. Get Logging Level
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{domain}}/admin/logginglevel
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get Logging Level
+
+  Retrieves the current root logging level.
+
+  ## Response
+
+  Returns the current logging level as text (200 OK)
+  - Values: TRACE, DEBUG, INFO, WARN, ERROR, OFF
+
+  ## Authentication
+
+  Requires active session
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a valid log level", function() {
+    expect(res.body).to.be.a('string');
+    expect(['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'OFF']).to.include(res.body);
+  });
+}

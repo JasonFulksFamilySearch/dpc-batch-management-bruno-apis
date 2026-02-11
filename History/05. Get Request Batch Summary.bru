@@ -1,0 +1,65 @@
+meta {
+  name: 05. Get Request Batch Summary
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{domain}}/history/requestBatchSummary
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "requestId": "{{requestId}}",
+    "states": ["DOWNLOAD_STARTED", "DOWNLOAD_FINISHED"],
+    "cisUserId": "{{cisUserId}}",
+    "pruneDownloadReset": true
+  }
+}
+
+docs {
+  ## Get Request Batch Summary
+
+  Retrieves a batch state summary for a delivery request with optional state filtering.
+
+  ## Request Body Fields
+
+  **requestId** (required, string): Delivery request ID to get summary for
+
+  **states** (optional, array): Filter by specific batch states
+  - Array of state strings
+
+  **cisUserId** (required, string): CIS user ID
+  - Format: "cis.user.XXXX-####"
+
+  **pruneDownloadReset** (optional, boolean): Remove DOWNLOAD_RESET entries
+  - Default: false
+
+  ## Response
+
+  Returns batch state summary object (200 OK)
+
+  Includes aggregate counts and statistics by state.
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Dashboard displays
+  - Progress tracking
+  - State distribution analysis
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an object", function() {
+    expect(res.body).to.be.an('object');
+  });
+}

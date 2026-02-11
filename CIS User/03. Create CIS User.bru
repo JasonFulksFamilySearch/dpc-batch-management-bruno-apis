@@ -1,0 +1,66 @@
+meta {
+  name: 03. Create CIS User
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{domain}}/cisUser/create
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "cisUserId": "cis.user.TEST-{{$timestamp}}",
+    "displayName": "Test User",
+    "email": "testuser{{$timestamp}}@example.com",
+    "primaryAccessUnitId": 1
+  }
+}
+
+docs {
+  ## Create CIS User
+
+  Creates a new CIS user in the system.
+
+  ## Request Body Fields
+
+  **cisUserId** (required, string): Unique CIS user identifier
+  - Format: "cis.user.XXXX-####" or other valid CIS ID format
+  - Must be unique in the system
+
+  **displayName** (required, string): User's display name
+  - Maximum length: 255 characters
+
+  **email** (required, string): User's email address
+  - Must be valid email format
+
+  **primaryAccessUnitId** (required, number): ID of user's primary access unit
+  - Must be an existing access unit
+
+  ## Response
+
+  Returns success message as text (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid request body or missing required fields
+  - **409 Conflict**: CIS user ID already exists
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

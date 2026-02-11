@@ -1,0 +1,53 @@
+meta {
+  name: 01. Verify Delivery Request Access
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{domain}}/authorize/deliveryRequest?requestForAccessUnitId=1&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestForAccessUnitId: 1
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Verify Delivery Request Access
+
+  Verifies that the current user belongs to the delivery request's access unit.
+  One of the three parameters must be provided.
+
+  ## Query Parameters (one required)
+
+  **requestForAccessUnitId** (optional, number): Access unit ID to verify
+  - Use this for v2 requests
+
+  **requestFor** (optional, string): Legacy access unit name
+  - DEPRECATED: Use requestForAccessUnitId instead
+
+  **requestId** (optional, string): Delivery request ID to verify
+
+  ## Response
+
+  Returns verification result (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Verify user permissions before showing request details
+  - Gate access to sensitive operations
+  - Validate user belongs to access unit
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

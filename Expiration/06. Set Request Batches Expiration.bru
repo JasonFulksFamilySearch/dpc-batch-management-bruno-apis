@@ -1,0 +1,51 @@
+meta {
+  name: 06. Set Request Batches Expiration
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{domain}}/expiration/request/batches?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Set Request Batches Expiration
+
+  Sets expiration to 6 months from today for all active batches in a request.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Bulk expiration renewal
+  - Extend all batches at once
+  - Simplify batch management
+
+  ## Notes
+
+  - Applies to all active batches in the request
+  - Expiration is set to 6 months from today
+  - Overwrites existing expiration dates
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

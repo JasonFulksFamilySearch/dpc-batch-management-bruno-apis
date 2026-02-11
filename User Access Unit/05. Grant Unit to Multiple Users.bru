@@ -1,0 +1,61 @@
+meta {
+  name: 05. Grant Unit to Multiple Users
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{domain}}/userAccessUnit/grantAccessUnitToUsers
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "accessUnitId": 1,
+    "cisUserIds": ["cis.user.AAAA-1234", "cis.user.BBBB-5678"]
+  }
+}
+
+docs {
+  ## Grant Unit to Multiple Users
+
+  Grants a single access unit to multiple users.
+
+  ## Request Body Fields
+
+  **accessUnitId** (required, number): Access unit ID to grant
+
+  **cisUserIds** (required, array): Array of CIS user IDs to grant access to
+  - Each ID format: "cis.user.XXXX-####"
+
+  ## Response
+
+  Returns success message (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid request body
+  - **404 Not Found**: Access unit or one of the users does not exist
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+
+  ## Notes
+
+  - Skips users who already have access
+  - Partial success possible if some users already have access
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

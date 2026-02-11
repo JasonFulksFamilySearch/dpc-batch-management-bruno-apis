@@ -1,0 +1,100 @@
+meta {
+  name: 11. Get Delivery Request with Filters (v3)
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{domain}}/deliveryRequest/summary/v3
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "requestId": "REQ-1234",
+    "shortDescription": "Monthly records delivery",
+    "requestType": "RECORDS_EXCHANGE",
+    "accessUnitId": "1",
+    "requestStatus": "IN_PROGRESS",
+    "startDate": "2025-09-26",
+    "endDate": "2025-09-30",
+    "requestedBy": "cis.user.AAAA-1234",
+    "downloadedBy": ["cis.user.AAAA-1234", "cis.user.BBBB-6789"],
+    "page": 0,
+    "pageSize": 20
+  }
+}
+
+docs {
+  ## Get Delivery Request with Filters (v3)
+
+  Retrieves delivery requests based on provided filter criteria with pagination support.
+  This is the most flexible endpoint for querying delivery requests.
+
+  ## Request Body Fields
+
+  All fields are optional - include only the filters you want to apply:
+
+  **requestId** (optional, string): Filter by specific request ID
+
+  **shortDescription** (optional, string): Filter by description (partial match)
+
+  **requestType** (optional, string): Filter by request type
+  - Valid values: RECORDS_EXCHANGE, MANUAL, INLINE, RESERVED
+  - Must match `DeliveryRequestV2.RequestType` enum
+
+  **accessUnitId** (optional, string): Filter by access unit ID
+
+  **requestStatus** (optional, string): Filter by request status
+  - Valid values: IN_PROGRESS, COMPLETED, FAILED, etc.
+  - Must match `RequestStatus` enum
+
+  **startDate** (optional, string): Start date for date range (inclusive)
+  - Format: yyyy-MM-dd (ISO 8601 local date)
+  - Must be provided with endDate to filter the Created field
+
+  **endDate** (optional, string): End date for date range (inclusive)
+  - Format: yyyy-MM-dd (ISO 8601 local date)
+  - Must be provided with startDate to filter the Created field
+
+  **requestedBy** (optional, string): Filter by CIS user ID who requested
+  - Format: "cis.user.XXXX-####"
+
+  **downloadedBy** (optional, array): Filter by CIS user IDs who downloaded
+  - Array of strings in format: "cis.user.XXXX-####"
+
+  **page** (optional, number): Page number (starts from 0)
+  - Default: 0
+
+  **pageSize** (optional, number): Number of results per page
+  - Default: 20
+
+  ## Response
+
+  Returns a `PaginatedContentOutDTO<DeliveryRequestDbEntry>` object with:
+  - **content**: Array of matching delivery request entries
+  - **page**: Current page number
+  - **pageSize**: Number of results per page
+  - **totalElements**: Total number of matching requests
+  - **totalPages**: Total number of pages
+
+  ## Notes
+
+  - Date range must include both startDate and endDate
+  - The date range is inclusive on both ends
+  - Pagination starts at page 0
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains paginated data", function() {
+    expect(res.body).to.be.an('object');
+    expect(res.body.content).to.be.an('array');
+    expect(res.body.page).to.be.a('number');
+    expect(res.body.totalElements).to.be.a('number');
+  });
+}

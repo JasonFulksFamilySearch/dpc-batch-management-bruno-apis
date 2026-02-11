@@ -1,0 +1,57 @@
+meta {
+  name: 05. Get Basic Batch List
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{domain}}/batch/detailedlist/basic?cisUserId={{cisUserId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  ~startDate: 2024-01-01T00:00:00
+  ~endDate: 2024-12-31T23:59:59
+  ~requestId:
+  ~batchId:
+  ~state:
+  ~contentType:
+  ~accessUnitId:
+  ~errorMessage:
+  ~projectId:
+  ~shortDescription:
+  ~notes:
+}
+
+docs {
+  Gets a basic list of batches for a given cisUserId,
+  optionally filtered by date range and other criteria.
+
+  **Query Parameters:**
+  - `cisUserId` (required) - CIS user ID
+  - `startDate` - Start date in ISO 8601 format
+  - `endDate` - End date in ISO 8601 format
+  - `requestId` - Filter by request ID
+  - `batchId` - Filter by batch ID
+  - `state` - Filter by batch state
+  - `contentType` - Filter by content type
+  - `accessUnitId` - Filter by access unit ID
+  - `errorMessage` - Filter by error message
+  - `projectId` - Filter by project ID
+  - `shortDescription` - Filter by short description
+  - `notes` - Filter by notes
+
+  **Returns:** List<BasicBatch>
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return array of BasicBatch objects", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

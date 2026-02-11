@@ -1,0 +1,56 @@
+meta {
+  name: 04. DB Test (local dev only)
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{domain}}/admin/dbtest?batchId={{batchId}}&requestId={{requestId}}&multiBatchInsertCount=5
+  body: none
+  auth: inherit
+}
+
+params:query {
+  batchId: {{batchId}}
+  requestId: {{requestId}}
+  multiBatchInsertCount: 5
+}
+
+docs {
+  ## DB Test (Local/Dev Only)
+
+  **⚠️ Warning:** Only available in local and dev environments.
+
+  Inserts test data into batch, delivery item, and delivery request tables for testing purposes.
+
+  ## Query Parameters
+
+  **batchId** (optional, string): Batch ID for test data
+
+  **sourceApid** (optional, string): Source APID for test data
+
+  **requestId** (optional, string): Request ID for test data
+
+  **multiBatchInsertCount** (optional, number): Number of batches to insert
+  - Default: 0
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Notes
+
+  - Only works in local/dev environments
+  - Creates test data in database
+  - Useful for integration testing
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

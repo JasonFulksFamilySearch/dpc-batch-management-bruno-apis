@@ -1,0 +1,44 @@
+meta {
+  name: 02. Get Empty Access Units
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{domain}}/audit/access-units/empty
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get Empty Access Units
+
+  Returns a list of access units that have no users assigned.
+
+  ## Response
+
+  Returns an array of access unit objects (200 OK)
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+
+  ## Use Cases
+
+  - Identify unused access units for cleanup
+  - Resource optimization
+  - Access control audits
+  - Verify access unit configuration
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

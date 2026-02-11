@@ -1,0 +1,60 @@
+meta {
+  name: 12. Get Delivery Requests by Project (v1 deprecated)
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{domain}}/deliveryRequest/project?projectId={{projectId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  projectId: {{projectId}}
+}
+
+docs {
+  ## Get Delivery Requests by Project (v1 - DEPRECATED)
+
+  ⚠️ **DEPRECATED**: Use `/deliveryRequest/project/v2` instead.
+  This legacy endpoint will be removed in a future release.
+
+  Returns all delivery requests for a given project in legacy v1 format where the access unit
+  is returned as a **name** in the `requestFor` field.
+
+  ## Query Parameters
+
+  **projectId** (required, string): The project identifier to filter by
+
+  ## Response
+
+  Returns an array of `DeliveryRequestInfo` objects (v1 schema) with:
+  - **requestFor**: Access unit name (not ID)
+  - V1 enum types
+  - One entry per delivery request in the project
+
+  ## Error Responses
+
+  - **IllegalArgumentException**: Invalid project ID (propagated from DAO)
+
+  ## Migration Path
+
+  Use `/deliveryRequest/project/v2` which returns `requestForAccessUnitId` (numeric ID) and v2 enums.
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+
+  test("Each request has requestFor field", function() {
+    if (res.body.length > 0) {
+      expect(res.body[0].requestFor).to.be.a('string');
+    }
+  });
+}

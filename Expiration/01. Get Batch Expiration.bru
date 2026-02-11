@@ -1,0 +1,48 @@
+meta {
+  name: 01. Get Batch Expiration
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{domain}}/expiration/batch?batchId={{batchId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  batchId: {{batchId}}
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Get Batch Expiration
+
+  Retrieves the expiration date for a single batch.
+
+  ## Query Parameters
+
+  **batchId** (required, string): The batch ID to get expiration for
+
+  **requestId** (required, string): The delivery request ID
+
+  ## Response
+
+  Returns the expiration date (200 OK)
+  - Returns date string or null if no expiration set
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid input parameters
+  - **404 Not Found**: Batch not found
+
+  ## Authentication
+
+  Requires active session
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

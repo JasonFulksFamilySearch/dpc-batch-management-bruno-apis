@@ -1,0 +1,45 @@
+meta {
+  name: 03. Set Primary Access Group (deprecated)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{domain}}/authorize/primaryAccessGroup?accessGroupId=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  accessGroupId: 1
+}
+
+docs {
+  ## Set Primary Access Group (DEPRECATED)
+
+  ⚠️ **DEPRECATED as of 2025.07.12**: Use `/cisUser/me/primaryAccessUnit` instead.
+
+  Sets the current user's primary access group/unit.
+
+  ## Query Parameters
+
+  **accessGroupId** (required, number): Access group/unit ID to set as primary
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Migration Path
+
+  Use PUT `/cisUser/me/primaryAccessUnit` with `accessUnitName` parameter.
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

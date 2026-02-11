@@ -1,0 +1,56 @@
+meta {
+  name: 04. Reserve Delivery Request Bytes
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{domain}}/deliveryRequest/reserve/bytes?cisUserId={{cisUserId}}&requestId={{requestId}}&requestedBytes=1073741824
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  requestId: {{requestId}}
+  requestedBytes: 1073741824
+}
+
+docs {
+  ## Reserve Delivery Request Bytes
+
+  Reserves batches for a delivery request up to a specified byte limit. This endpoint is used
+  to allocate batches for download based on available capacity.
+
+  ## Query Parameters
+
+  **cisUserId** (required, string): CIS user ID requesting the reservation
+  - Format: "cis.user.XXXX-####"
+
+  **requestId** (required, string): The delivery request ID to reserve batches for
+
+  **requestedBytes** (required, number): Maximum number of bytes to reserve
+  - Must be a positive long value
+  - Example: 1073741824 (1 GB)
+
+  ## Response
+
+  Returns a JSON string with reservation details on success (200 OK)
+
+  ## Error Responses
+
+  - **404 Not Found**: No batches available for this request
+  - **422 Unprocessable Entity**: No batches small enough to fit within requested bytes
+    - Response includes: `{"smallestAvailableBatchSize": <size>}`
+  - **500 Internal Server Error**: Unexpected error during reservation
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains reservation data", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

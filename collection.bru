@@ -1,0 +1,27 @@
+headers {
+  User-Agent: fs-internal-fulksjas-bruno
+  FS-User-Agent-Chain: dpc-batch-management-bruno
+}
+
+auth {
+  mode: oauth2
+}
+
+auth:oauth2 {
+  grant_type: authorization_code
+  callback_url: https://localhost:8999/
+  authorization_url: https://{{authSubdomain}}.familysearch.org/service/ident/cis/cis-web/oauth2/v3/authorization
+  access_token_url: https://{{authSubdomain}}.familysearch.org/service/ident/cis/cis-web/oauth2/v3/token
+  refresh_token_url:
+  client_id: fs-internal-dev-key-000136
+  client_secret:
+  scope:
+  state:
+  pkce: true
+  credentials_placement: body
+  credentials_id: credentials
+  token_placement: header
+  token_header_prefix: Bearer
+  auto_fetch_token: true
+  auto_refresh_token: false
+}

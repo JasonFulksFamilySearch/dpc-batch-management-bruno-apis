@@ -1,0 +1,50 @@
+meta {
+  name: 07. Set Next Expiration
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{domain}}/expiration/request/batches/next-expiration?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Set Next Expiration
+
+  Sets expiration to 6 months from today for all batches with the soonest expiration in a request.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Extend batches expiring soonest
+  - Targeted expiration management
+  - Prioritize urgent renewals
+
+  ## Notes
+
+  - Only affects batches with the earliest expiration date
+  - Useful when only some batches need renewal
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

@@ -1,0 +1,43 @@
+meta {
+  name: 09. Check if Batch was Packaged
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{domain}}/batch/wasPackaged?batchId={{batchId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  batchId: {{batchId}}
+  requestId: {{requestId}}
+}
+
+docs {
+  Checks if a batch was packaged by verifying if it's in one of the packaged states:
+  - DELIVERED
+  - MARKED_COMPLETE
+  - READY_FOR_DELIVERY
+
+  **Query Parameters:**
+  - `batchId` (required) - Batch ID
+  - `requestId` (required) - Request ID
+
+  **Returns:** Boolean (true if batch was packaged, false otherwise)
+}
+
+vars:pre-request {
+  batchId: 12345
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return boolean value", function() {
+    expect(res.body).to.be.a('boolean');
+  });
+}

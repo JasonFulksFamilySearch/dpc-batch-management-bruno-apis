@@ -1,0 +1,75 @@
+meta {
+  name: 02. Store Delivery Request Info (v1 deprecated)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{domain}}/deliveryRequest/store/info
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "requestFor": "Access Unit Name",
+    "requestType": "RECORDS_EXCHANGE",
+    "projectId": "PROJ-123",
+    "shortDescription": "Test delivery request",
+    "notes": "Created via Bruno"
+  }
+}
+
+docs {
+  ## Store Delivery Request Info (v1 - DEPRECATED)
+
+  ⚠️ **DEPRECATED**: Use `/deliveryRequest/store/info/v2` instead.
+  This legacy endpoint will be removed in a future release.
+
+  Stores a legacy v1 delivery request where the access unit is specified by **name** in the
+  `requestFor` field. The controller converts this to v2 format by resolving the name to an ID.
+
+  ## Request Body Fields
+
+  **requestFor** (required, string): Access unit **name** (not ID)
+  - This is the legacy v1 field
+  - Will be converted to requestForAccessUnitId in v2
+
+  **requestType** (optional, string): Request type
+  - Valid values: RECORDS_EXCHANGE, MANUAL, INLINE, RESERVED
+
+  **projectId** (optional, string): Project identifier
+
+  **shortDescription** (optional, string): Short description of the request
+
+  **notes** (optional, string): Additional notes
+
+  ## Response
+
+  Returns the generated request ID as a string (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Missing requestFor or unknown access unit name
+  - **500 Internal Server Error**: Unexpected error
+
+  ## Migration Path
+
+  Use `/deliveryRequest/store/info/v2` with `requestForAccessUnitId` (numeric ID) instead of `requestFor` (name).
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains request ID", function() {
+    expect(res.body).to.be.a('string');
+  });
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setVar("requestId", res.body);
+  }
+}

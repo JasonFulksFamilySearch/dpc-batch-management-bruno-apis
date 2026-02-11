@@ -1,0 +1,58 @@
+meta {
+  name: 07. Revoke All Users from Unit
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{domain}}/userAccessUnit/revokeAllUsersFromUnit?accessUnitId={{accessUnitId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  accessUnitId: {{accessUnitId}}
+}
+
+docs {
+  ## Revoke All Users from Unit
+
+  Revokes access to an access unit from ALL users.
+
+  **⚠️ Warning:** This is a bulk operation affecting all users with access to this unit.
+
+  ## Query Parameters
+
+  **accessUnitId** (required, number): Access unit ID to revoke all users from
+
+  ## Response
+
+  Returns success message (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid access unit ID
+  - **404 Not Found**: Access unit does not exist
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+
+  ## Use Cases
+
+  - Preparing to delete an access unit
+  - Emergency access revocation
+  - Bulk permission cleanup
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

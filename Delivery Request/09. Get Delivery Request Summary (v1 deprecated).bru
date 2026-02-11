@@ -1,0 +1,57 @@
+meta {
+  name: 09. Get Delivery Request Summary (v1 deprecated)
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{domain}}/deliveryRequest/summary?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Get Delivery Request Summary (v1 - DEPRECATED)
+
+  ⚠️ **DEPRECATED**: Use `/deliveryRequest/summary/v2` instead.
+  This legacy endpoint will be removed in a future release.
+
+  Returns the legacy v1 delivery request summary where the access unit is returned as a **name**
+  in the `requestFor` field. The group count is populated but the actual group list is not included.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to retrieve
+
+  ## Response
+
+  Returns a `DeliveryRequestInfo` object (v1 schema) with:
+  - **requestFor**: Access unit name (not ID)
+  - **groupCount**: Number of batches for this request
+  - Group list is NOT included (legacy behavior)
+
+  ## Error Responses
+
+  - **IllegalArgumentException**: Request ID not found
+
+  ## Migration Path
+
+  Use `/deliveryRequest/summary/v2` which returns `requestForAccessUnitId` (numeric ID) instead
+  of `requestFor` (name).
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains delivery request info", function() {
+    expect(res.body).to.be.an('object');
+    expect(res.body.requestFor).to.be.a('string');
+    expect(res.body.groupCount).to.be.a('number');
+  });
+}

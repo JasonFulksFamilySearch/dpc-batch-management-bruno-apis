@@ -1,0 +1,51 @@
+meta {
+  name: 04. Get Expiring Batches
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{domain}}/expiration/expiring?daysTillExpire=30
+  body: none
+  auth: inherit
+}
+
+params:query {
+  daysTillExpire: 30
+}
+
+docs {
+  ## Get Expiring Batches
+
+  Retrieves a list of batches expiring soon within the specified number of days.
+
+  ## Query Parameters
+
+  **daysTillExpire** (optional, number): Number of days to look ahead
+  - Default: 30
+
+  ## Response
+
+  Returns an array of batches expiring within the specified timeframe (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Proactive expiration notifications
+  - Generate expiration reports
+  - Renewal reminders
+  - Batch maintenance planning
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

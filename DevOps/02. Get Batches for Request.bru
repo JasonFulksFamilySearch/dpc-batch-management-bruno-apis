@@ -1,0 +1,50 @@
+meta {
+  name: 02. Get Batches for Request
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{domain}}/devops/batches?requestid={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestid: {{requestId}}
+}
+
+docs {
+  ## Get Batches for Request
+
+  Retrieves all batches for a specific delivery request.
+
+  ## Query Parameters
+
+  **requestid** (required, string): The delivery request ID
+  - Note: lowercase parameter name
+
+  ## Response
+
+  Returns an array of batch objects (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - DevOps troubleshooting
+  - Monitor batch status for a request
+  - Verify batch creation
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

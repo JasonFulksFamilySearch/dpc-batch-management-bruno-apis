@@ -1,0 +1,49 @@
+meta {
+  name: 06. Get My Primary Access Unit
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{domain}}/cisUser/me/primaryAccessUnit
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get My Primary Access Unit
+
+  Retrieves the current user's primary access unit name.
+
+  **Note:** This is a "self-service" endpoint that does not require admin permissions.
+
+  ## Response
+
+  Returns the primary access unit name as plain text (200 OK)
+
+  ## Error Responses
+
+  - **401 Unauthorized**: No active session
+  - **404 Not Found**: Current user has no primary access unit set
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - **No special permissions required** (self-service endpoint)
+
+  ## Use Cases
+
+  - Display user's current primary access unit in UI
+  - Verify primary access unit before making delivery requests
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a string", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

@@ -1,0 +1,41 @@
+meta {
+  name: 11. Delete Batch List
+  type: http
+  seq: 11
+}
+
+delete {
+  url: {{domain}}/batch/list?requestId={{requestId}}
+  body: json
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+body:json {
+  [
+    "batch-id-1",
+    "batch-id-2",
+    "batch-id-3"
+  ]
+}
+
+docs {
+  Deletes multiple batches by updating their state to MARKED_COMPLETE
+  and marking their access units as deleted.
+
+  **Query Parameters:**
+  - `requestId` (required) - Request ID for all batches
+
+  **Request Body:** Array of batch IDs (strings)
+
+  **Note:** This doesn't physically delete the batches, but marks them as complete and deleted.
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

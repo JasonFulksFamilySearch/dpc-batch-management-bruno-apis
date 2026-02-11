@@ -1,0 +1,51 @@
+meta {
+  name: 07. Get Reservation Histories
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{domain}}/deliveryRequest/reservations?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Get Reservation Histories
+
+  Retrieves the complete reservation history for a delivery request, showing all reservation
+  and unreservation events.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to get histories for
+
+  ## Response
+
+  Returns an array of `ReservationHistory` objects (200 OK)
+
+  Each history entry includes:
+  - Timestamp of the reservation/unreservation event
+  - User who performed the action
+  - Batches affected
+  - Action type (reserve/unreserve)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid requestId format
+  - **500 Internal Server Error**: Failed to retrieve histories
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

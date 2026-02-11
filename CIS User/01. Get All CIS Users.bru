@@ -1,0 +1,45 @@
+meta {
+  name: 01. Get All CIS Users
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{domain}}/cisUser
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get All CIS Users
+
+  Retrieves a list of all CIS users in the system.
+
+  ## Response
+
+  Returns an array of `CisUserDto` objects (200 OK)
+
+  Each CisUserDto includes:
+  - **cisUserId**: CIS user identifier
+  - **displayName**: User's display name
+  - **email**: User's email address
+  - **primaryAccessUnitId**: User's primary access unit ID
+  - **primaryAccessUnitName**: User's primary access unit name
+  - Other user profile information
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

@@ -1,0 +1,56 @@
+meta {
+  name: 07. Create Access Unit
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{domain}}/accessUnit/create?accessUnitName=New Access Unit&custodianId={{cisUserId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  accessUnitName: New Access Unit
+  custodianId: {{cisUserId}}
+}
+
+docs {
+  ## Create Access Unit
+
+  Creates a new access unit with the specified name and optional custodian.
+
+  ## Query Parameters
+
+  **accessUnitName** (required, string): Name for the new access unit
+  - Must be unique
+  - Maximum length constraints may apply
+
+  **custodianId** (optional, string): Custodian CIS user ID
+  - Format: CIS user ID (e.g., "cis.user.XXXX-####")
+
+  ## Response
+
+  Returns success message as text (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid request parameters
+  - **409 Conflict**: Access unit name already exists
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

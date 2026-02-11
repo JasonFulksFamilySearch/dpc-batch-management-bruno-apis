@@ -1,0 +1,60 @@
+meta {
+  name: 02. Get All Delivery Statuses with State
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{domain}}/delivery/status/all?cisUserId={{cisUserId}}&lastDays=30&requestId={{requestId}}&extendedFields=true
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  lastDays: 30
+  requestId: {{requestId}}
+  extendedFields: true
+}
+
+docs {
+  ## Get All Delivery Statuses with State
+
+  Retrieves all delivery request statuses with detailed state information.
+
+  ## Query Parameters
+
+  **cisUserId** (required, string): CIS user ID to get statuses for
+  - Format: "cis.user.XXXX-####"
+
+  **lastDays** (optional, number): Filter to requests created in the last N days
+  - Default: 0 (all dates)
+
+  **requestId** (optional, string): Filter by specific request ID
+
+  **extendedFields** (optional, boolean): Include extended field information
+  - Default: false
+
+  **requestType** (optional, string): Filter by request type
+  - Valid values: RECORDS_EXCHANGE, MANUAL, INLINE, RESERVED
+
+  ## Response
+
+  Returns an array of delivery request statuses with state information (200 OK)
+
+  Includes batch state details and progress information.
+
+  ## Authentication
+
+  Requires active session with access validation
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

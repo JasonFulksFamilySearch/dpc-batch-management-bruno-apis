@@ -1,0 +1,53 @@
+meta {
+  name: 02. Get CIS User by ID
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{domain}}/cisUser/id
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "cisUserId": "{{cisUserId}}"
+  }
+}
+
+docs {
+  ## Get CIS User by ID
+
+  Retrieves a specific CIS user by their CIS user ID.
+
+  ## Request Body
+
+  **cisUserId** (required, string): The CIS user identifier to look up
+  - Format: "cis.user.XXXX-####" or other valid CIS ID format
+
+  ## Response
+
+  Returns a `CisUserDto` object (200 OK)
+
+  ## Error Responses
+
+  - **404 Not Found**: CIS user does not exist
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains CIS user", function() {
+    expect(res.body).to.be.an('object');
+    expect(res.body.cisUserId).to.be.a('string');
+  });
+}

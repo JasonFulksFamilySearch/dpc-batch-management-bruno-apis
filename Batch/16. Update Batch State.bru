@@ -1,0 +1,62 @@
+meta {
+  name: 16. Update Batch State
+  type: http
+  seq: 16
+}
+
+post {
+  url: {{domain}}/batch/updateState?requestId={{requestId}}&batchState=VALIDATING
+  body: json
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+  batchState: VALIDATING
+}
+
+body:json {
+  [
+    "batch-id-1",
+    "batch-id-2"
+  ]
+}
+
+docs {
+  Updates the state of multiple batches to a specified state.
+
+  **Note:** This endpoint is called by the Delivery Service and only sets
+  the state to PREPARING or VALIDATING.
+
+  **Query Parameters:**
+  - `requestId` (required) - Request ID for all batches
+  - `batchState` (required) - New batch state to set
+
+  **Valid BatchState values:**
+  - QUEUED
+  - VALIDATING
+  - PREPARING
+  - READY_FOR_DELIVERY
+  - DELIVERED
+  - RECORD_ERROR
+  - MARKED_COMPLETE
+  - DOWNLOAD_STARTED
+  - DOWNLOAD_PAUSED
+  - DOWNLOAD_RESUMED
+  - DOWNLOAD_ERRORED
+  - DOWNLOAD_FINISHED
+  - DOWNLOAD_RESET
+  - DOWNLOAD_EXPIRED
+  - UNKNOWN
+  - EXPIRED
+
+  **Request Body:** Array of batch IDs (strings)
+
+  **Used by:** Delivery Service (typically sets to PREPARING or VALIDATING)
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

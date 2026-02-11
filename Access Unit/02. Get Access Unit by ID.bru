@@ -1,0 +1,46 @@
+meta {
+  name: 02. Get Access Unit by ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{domain}}/accessUnit/{{accessUnitId}}
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get Access Unit by ID
+
+  Retrieves a specific access unit by its numeric ID.
+
+  ## Path Parameters
+
+  **accessUnitId** (required, number): The access unit ID
+
+  ## Response
+
+  Returns an `AccessUnit` object (200 OK)
+
+  ## Error Responses
+
+  - **404 Not Found**: Access unit does not exist
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains access unit", function() {
+    expect(res.body).to.be.an('object');
+    expect(res.body.accessUnitId).to.be.a('number');
+  });
+}

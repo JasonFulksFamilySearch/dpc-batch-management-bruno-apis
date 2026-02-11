@@ -1,0 +1,57 @@
+meta {
+  name: 05. Delete CIS User
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{domain}}/cisUser/delete
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "cisUserId": "{{cisUserId}}"
+  }
+}
+
+docs {
+  ## Delete CIS User
+
+  Deletes a CIS user from the system.
+
+  **⚠️ Warning:** This is a destructive operation. Ensure the user is no longer needed.
+
+  ## Request Body
+
+  **cisUserId** (required, string): CIS user identifier to delete
+  - Format: "cis.user.XXXX-####" or other valid CIS ID format
+
+  ## Response
+
+  Returns void (204 No Content)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid request body
+  - **404 Not Found**: CIS user does not exist
+  - **409 Conflict**: User is still associated with active resources
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+
+  ## Notes
+
+  - Consider revoking all access unit assignments before deletion
+  - Cannot delete users with active delivery requests or locks
+}
+
+tests {
+  test("Status is 204 No Content", function() {
+    expect(res.status).to.equal(204);
+  });
+}

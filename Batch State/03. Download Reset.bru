@@ -1,0 +1,72 @@
+meta {
+  name: 03. Download Reset
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{domain}}/batch-state/downloadReset
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "batchIds": ["{{batchId}}"],
+    "requestId": "{{requestId}}",
+    "cisUserId": "{{cisUserId}}"
+  }
+}
+
+docs {
+  ## Download Reset
+
+  Resets batches to DOWNLOAD_RESET state, clearing any download progress. This also deletes
+  the S3 batch deliverable. Used by the Delivery Service when a download needs to be restarted.
+
+  **Note:** Batches are enqueued for processing asynchronously.
+
+  ## Request Body Fields
+
+  **batchIds** (required, array): Array of batch IDs to reset
+  - Only batches associated with the provided cisUserId will be updated
+
+  **requestId** (required, string): The delivery request ID these batches belong to
+
+  **cisUserId** (required, string): CIS user ID of the user resetting downloads
+  - Format: "cis.user.XXXX-####"
+  - Only batches associated with this user will be affected
+
+  ## Response
+
+  Returns "Successfully enqueued batches" (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid BatchStateRequest (validation failed)
+    - Missing required fields
+    - Empty arrays where data is required
+
+  ## Side Effects
+
+  - Updates batch state to DOWNLOAD_RESET in database
+  - Deletes S3 batch deliverable files
+  - Clears download progress
+  - Used by Delivery Service for retry scenarios
+
+  ## Use Cases
+
+  - Download interrupted and needs restart
+  - Download corrupted and needs retry
+  - User cancels download and restarts later
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response confirms success", function() {
+    expect(res.body).to.equal('Successfully enqueued batches');
+  });
+}

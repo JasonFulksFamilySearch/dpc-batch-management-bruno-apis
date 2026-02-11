@@ -1,0 +1,48 @@
+meta {
+  name: 02. Get Archived Delivery Items (deprecated)
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{domain}}/archive/deliveryItems?batchId={{batchId}}&requestId={{requestId}}&cisUserId={{cisUserId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  batchId: {{batchId}}
+  requestId: {{requestId}}
+  cisUserId: {{cisUserId}}
+}
+
+docs {
+  ## Get Archived Delivery Items (DEPRECATED)
+
+  ⚠️ **DEPRECATED**: This endpoint is deprecated and may be removed in a future release.
+
+  Retrieves archived delivery items for a specific batch, request, and user.
+
+  ## Query Parameters
+
+  **batchId** (required, string): The batch ID to retrieve archived items for
+
+  **requestId** (required, string): The delivery request ID
+
+  **cisUserId** (required, string): CIS user ID
+  - Format: "cis.user.XXXX-####"
+
+  ## Response
+
+  Returns archived delivery items (200 OK)
+
+  ## Authentication
+
+  Requires active session
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

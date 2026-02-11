@@ -1,0 +1,62 @@
+meta {
+  name: 01. Create or Update Delivery Item
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{domain}}/deliveryitem
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "batchId": "{{batchId}}",
+    "requestId": "{{requestId}}",
+    "itemName": "item-001.pdf",
+    "itemPath": "s3://bucket/path/to/item",
+    "itemSize": 1048576,
+    "itemType": "PDF",
+    "metadata": {
+      "pages": 10
+    }
+  }
+}
+
+docs {
+  ## Create or Update Delivery Item
+
+  Creates or updates (upsert) a delivery item entry in the database. All delivery item fields
+  are required in the request body.
+
+  ## Request Body Fields
+
+  **batchId** (required, string): The batch ID this item belongs to
+
+  **requestId** (required, string): The delivery request ID
+
+  **itemName** (required, string): Name of the delivery item
+
+  **itemPath** (required, string): Path or reference to the item (e.g., S3 path)
+
+  **itemSize** (required, number): Size of the item in bytes
+
+  **itemType** (required, string): Type of the item (PDF, IMAGE, etc.)
+
+  **metadata** (optional, object): Additional item metadata as key-value pairs
+
+  ## Response
+
+  Returns success message (200 OK)
+
+  ## Authentication
+
+  Requires active session
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

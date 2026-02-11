@@ -1,0 +1,40 @@
+meta {
+  name: 14. Get Spec ID
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{domain}}/deliveryRequest/specId?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Get Spec ID
+
+  Retrieves the specification ID associated with a delivery request.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to get the spec ID for
+
+  ## Response
+
+  Returns the spec ID as a string (200 OK)
+  - May be null if no spec ID is set for this request
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a string or null", function() {
+    expect(res.body === null || typeof res.body === 'string').to.be.true;
+  });
+}

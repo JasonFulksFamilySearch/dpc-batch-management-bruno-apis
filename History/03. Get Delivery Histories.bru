@@ -1,0 +1,59 @@
+meta {
+  name: 03. Get Delivery Histories
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{domain}}/history/histories?requestId={{requestId}}&groupId=group-123&limit=100
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+  groupId: group-123
+  limit: 100
+}
+
+docs {
+  ## Get Delivery Histories
+
+  Retrieves delivery state history items in descending order by date.
+
+  ## Query Parameters
+
+  At least one of requestId or groupId is required.
+
+  **requestId** (optional, string): Filter by delivery request ID
+
+  **groupId** (optional, string): Filter by group/batch ID
+
+  **limit** (optional, number): Maximum number of results
+  - Default: 100
+  - Maximum: 500
+
+  ## Response
+
+  Returns an array of delivery state history objects (200 OK)
+
+  Sorted by date in descending order (newest first).
+
+  ## Authentication
+
+  Requires active session
+
+  ## Error Responses
+
+  - **400 Bad Request**: Neither requestId nor groupId provided
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

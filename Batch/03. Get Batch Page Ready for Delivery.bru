@@ -1,0 +1,66 @@
+meta {
+  name: 03. Get Batch Page Ready for Delivery
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{domain}}/batch/page/ready?cisUserId={{cisUserId}}&page=0&size=20
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  page: 0
+  size: 20
+  ~startDate: 2024-01-01T00:00:00
+  ~endDate: 2024-12-31T23:59:59
+  ~requestId:
+  ~batchId:
+  ~contentType: RECORDS
+  ~accessUnitId:
+  ~errorMessage:
+  ~sort: batchId,asc
+}
+
+docs {
+  Gets a paginated list of batches that are ready for delivery for a given cisUserId.
+
+  **Note:** The `state` parameter is overridden by the server to `READY_FOR_DELIVERY`,
+  so any state value provided in the request will be ignored.
+
+  **Query Parameters:**
+  - `cisUserId` (required) - CIS user ID
+  - `page` - Page number (0-indexed)
+  - `size` - Number of items per page
+  - `startDate` - Start date in ISO 8601 format
+  - `endDate` - End date in ISO 8601 format
+  - `requestId` - Filter by request ID
+  - `batchId` - Filter by batch ID
+  - `contentType` - Filter by content type (IMAGES, RECORDS)
+  - `accessUnitId` - Filter by access unit ID
+  - `errorMessage` - Filter by error message
+  - `sort` - Sort criteria
+
+  **Returns:** Page<BatchListEntry> (only batches in READY_FOR_DELIVERY state)
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return paginated results", function() {
+    expect(res.body).to.have.property('content');
+    expect(res.body.content).to.be.an('array');
+  });
+
+  test("all batches should be READY_FOR_DELIVERY", function() {
+    if (res.body.content.length > 0) {
+      res.body.content.forEach(batch => {
+        expect(batch.state).to.equal('READY_FOR_DELIVERY');
+      });
+    }
+  });
+}

@@ -1,0 +1,45 @@
+meta {
+  name: 02. Get Users in Access Unit
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{domain}}/userAccessUnit/unitId?accessUnitId={{accessUnitId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  accessUnitId: {{accessUnitId}}
+}
+
+docs {
+  ## Get Users in Access Unit
+
+  Retrieves all CIS users who have access to a specific access unit.
+
+  ## Query Parameters
+
+  **accessUnitId** (required, number): The access unit ID to get users for
+
+  ## Response
+
+  Returns an array of `CisUsersInAccessUnitInfo` objects (200 OK)
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

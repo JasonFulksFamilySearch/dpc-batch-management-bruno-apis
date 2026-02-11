@@ -1,0 +1,41 @@
+meta {
+  name: 04. Get All Access Groups (deprecated)
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{domain}}/authorize/accessGroups
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get All Access Groups (DEPRECATED)
+
+  ⚠️ **DEPRECATED as of 2025.07.12**: Use `/userAccessUnit/me/accessUnits` instead.
+
+  Returns a list of all UserAccessUnit records for the current user as JSON.
+
+  ## Response
+
+  Returns JSON array of access group records (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Migration Path
+
+  Use `/userAccessUnit/me/accessUnits` for the same functionality.
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a string (JSON array)", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

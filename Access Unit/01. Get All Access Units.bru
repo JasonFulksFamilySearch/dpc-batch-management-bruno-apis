@@ -1,0 +1,42 @@
+meta {
+  name: 01. Get All Access Units
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{domain}}/accessUnit
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get All Access Units
+
+  Retrieves a list of all access units in the system.
+
+  ## Response
+
+  Returns an array of `AccessUnit` objects (200 OK)
+
+  Each AccessUnit includes:
+  - **accessUnitId**: Numeric ID
+  - **accessUnitName**: Name of the access unit
+  - **custodianId**: Optional custodian identifier
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

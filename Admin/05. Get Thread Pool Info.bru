@@ -1,0 +1,47 @@
+meta {
+  name: 05. Get Thread Pool Info
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{domain}}/admin/async_thread_pool_info
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get Thread Pool Info
+
+  Returns thread pool executor configuration details as plain text.
+
+  ## Response
+
+  Returns thread pool configuration details (200 OK)
+
+  Includes:
+  - Core pool size
+  - Maximum pool size
+  - Current active threads
+  - Queue size
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Monitor thread pool utilization
+  - Diagnose performance issues
+  - Capacity planning
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains thread pool info", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

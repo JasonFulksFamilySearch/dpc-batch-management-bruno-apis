@@ -1,0 +1,55 @@
+meta {
+  name: 04. Get Lock Owner
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{domain}}/deliveryRequest/lock/owner?requestId={{requestId}}&cisUserId={{cisUserId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+  cisUserId: {{cisUserId}}
+}
+
+docs {
+  ## Get Lock Owner
+
+  Retrieves the CIS user ID of the user who currently holds the lock on a delivery request.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to check
+
+  **cisUserId** (required, string): CIS user ID making the request
+  - Format: "cis.user.XXXX-####"
+
+  ## Response
+
+  Returns the lock owner's CIS user ID as a string (200 OK)
+  - Returns the owner ID if locked
+  - Returns null or empty if not locked
+
+  ## Authentication
+
+  Requires active session with access validation
+
+  ## Use Cases
+
+  - Identify who has locked a request
+  - Display lock information in UI
+  - Determine if you can request lock release
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a string or null", function() {
+    expect(res.body === null || typeof res.body === 'string').to.be.true;
+  });
+}

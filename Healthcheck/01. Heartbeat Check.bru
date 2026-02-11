@@ -1,0 +1,45 @@
+meta {
+  name: 01. Heartbeat Check
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{domain}}/healthcheck/heartbeat
+  body: none
+  auth: none
+}
+
+docs {
+  ## Heartbeat Check
+
+  A very fast basic health check designed for load balancers to call frequently.
+  This endpoint uses a HEAD request by default for DTM health checks.
+
+  ## Response
+
+  Returns "ok" as plain text (200 OK)
+
+  ## Performance
+
+  - Very lightweight and fast
+  - Minimal overhead suitable for frequent polling
+  - No authentication required
+  - No dependencies on external services
+
+  ## Use Cases
+
+  - Load balancer health checks
+  - Kubernetes liveness probes
+  - Quick verification that the service is running
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is 'ok'", function() {
+    expect(res.body).to.equal('ok');
+  });
+}

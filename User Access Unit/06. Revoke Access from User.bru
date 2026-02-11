@@ -1,0 +1,56 @@
+meta {
+  name: 06. Revoke Access from User
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{domain}}/userAccessUnit/revokeAccess
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "cisUserId": "{{cisUserId}}",
+    "accessUnitId": 1
+  }
+}
+
+docs {
+  ## Revoke Access from User
+
+  Revokes a specific access unit from a user.
+
+  ## Request Body Fields
+
+  **cisUserId** (required, string): CIS user ID to revoke access from
+  - Format: "cis.user.XXXX-####"
+
+  **accessUnitId** (required, number): Access unit ID to revoke
+
+  ## Response
+
+  Returns success message (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid request body
+  - **404 Not Found**: User, access unit, or assignment does not exist
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

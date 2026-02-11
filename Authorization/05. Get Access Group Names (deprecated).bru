@@ -1,0 +1,41 @@
+meta {
+  name: 05. Get Access Group Names (deprecated)
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{domain}}/authorize/groups
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get Access Group Names (DEPRECATED)
+
+  ⚠️ **DEPRECATED as of 2025.07.12**: Use `/userAccessUnit/me/accessUnitNames` instead.
+
+  Returns a list of access group names the current user is a member of as JSON.
+
+  ## Response
+
+  Returns JSON array of access group names (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Migration Path
+
+  Use `/userAccessUnit/me/accessUnitNames` for the same functionality.
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a string (JSON array)", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

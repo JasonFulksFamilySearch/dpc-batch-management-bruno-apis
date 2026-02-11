@@ -1,0 +1,51 @@
+meta {
+  name: 08. Set Never Expire
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{domain}}/expiration/request/batches/never-expire?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Set Never Expire
+
+  Sets expiration to null (never expire) for all active batches in a request.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Permanent batch retention
+  - Archive important deliveries
+  - Remove expiration constraints
+
+  ## Notes
+
+  - Sets expiration to null (never expire)
+  - Applies to all active batches
+  - Use with caution - may impact storage costs
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

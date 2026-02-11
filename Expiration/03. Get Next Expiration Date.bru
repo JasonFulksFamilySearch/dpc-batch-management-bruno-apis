@@ -1,0 +1,50 @@
+meta {
+  name: 03. Get Next Expiration Date
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{domain}}/expiration/request/batches/next-expiration?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Get Next Expiration Date
+
+  Retrieves the soonest expiration date among all active batches in a request.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID
+
+  ## Response
+
+  Returns the earliest expiration date (200 OK)
+  - Returns date string or null if no expirations set
+
+  ## Error Responses
+
+  - **404 Not Found**: No active batches with expirations found
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Display "expires on" date in UI
+  - Alert users about upcoming expirations
+  - Determine renewal priority
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

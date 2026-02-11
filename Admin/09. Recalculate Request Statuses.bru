@@ -1,0 +1,67 @@
+meta {
+  name: 09. Recalculate Request Statuses
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{domain}}/admin/recalculateRequestStatuses?limit=100&dryRun=false
+  body: none
+  auth: inherit
+}
+
+params:query {
+  limit: 100
+  dryRun: false
+}
+
+docs {
+  ## Recalculate Request Statuses
+
+  Recalculates and optionally fixes delivery request statuses based on batch states.
+
+  ## Query Parameters
+
+  **limit** (optional, number): Maximum number of requests to process
+  - Default: 100
+  - Maximum: 50000
+
+  **dryRun** (optional, boolean): Preview changes without updating
+  - Default: false
+  - Set to true to see what would change
+
+  ## Response
+
+  Returns recalculation results (200 OK)
+
+  Includes:
+  - Number of requests processed
+  - Number of statuses corrected
+  - Details of changes made (or would be made if dryRun)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Fix inconsistent statuses
+  - Sync request status with batch states
+  - Data cleanup after system issues
+
+  ## Notes
+
+  - Use dryRun first to preview changes
+  - Process in batches for large datasets
+  - Monitor logs during execution
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains results", function() {
+    expect(res.body).to.be.an('object');
+  });
+}

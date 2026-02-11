@@ -1,0 +1,57 @@
+meta {
+  name: 03. Grant Single Access to User
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{domain}}/userAccessUnit/grantAccess
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "cisUserId": "{{cisUserId}}",
+    "accessUnitId": 1
+  }
+}
+
+docs {
+  ## Grant Single Access to User
+
+  Grants a single access unit to a single user.
+
+  ## Request Body Fields
+
+  **cisUserId** (required, string): CIS user ID to grant access to
+  - Format: "cis.user.XXXX-####"
+
+  **accessUnitId** (required, number): Access unit ID to grant
+
+  ## Response
+
+  Returns success message (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid request body
+  - **404 Not Found**: User or access unit does not exist
+  - **409 Conflict**: User already has access to this unit
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

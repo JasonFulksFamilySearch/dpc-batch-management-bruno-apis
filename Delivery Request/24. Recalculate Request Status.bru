@@ -1,0 +1,64 @@
+meta {
+  name: 24. Recalculate Request Status
+  type: http
+  seq: 24
+}
+
+post {
+  url: {{domain}}/deliveryRequest/update/recalculateRequestStatus?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Recalculate Request Status
+
+  Automatically calculates and updates the status of a delivery request based on its batches' states.
+  This is the preferred way to update status as it ensures consistency with actual batch states.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to recalculate status for
+
+  ## Response
+
+  Returns a descriptive message as text (200 OK) with one of:
+  - "Status already correct for request {id}: {status}" - No update needed
+  - "Updated status for request {id} from {old} to {new}" - Status was updated
+  - "No automatic status applies for request {id}. Current status: {status}" - Manual status set
+
+  ## Error Responses
+
+  - **404 Not Found**: Request not found
+  - **500 Internal Server Error**: Failed to recalculate status
+
+  ## Status Calculation Logic
+
+  The status is calculated based on the states of all batches in the request:
+  - All batches DELIVERED → COMPLETED
+  - Any batch ERROR → FAILED
+  - All batches QUEUED → PENDING
+  - Mixed states → IN_PROGRESS
+  - (Additional logic in RequestStatusCalculator)
+
+  ## Notes
+
+  - This endpoint respects manual status overrides (IN_PROGRESS/PAUSED preservation logic is bypassed)
+  - Use this after batch state changes to sync the request status
+  - Logs status changes at INFO level
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains status message", function() {
+    expect(res.body).to.be.a('string');
+    expect(res.body).to.include('request');
+  });
+}

@@ -1,0 +1,46 @@
+meta {
+  name: 10. Get My Access Unit Names
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{domain}}/userAccessUnit/me/accessUnitNames
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get My Access Unit Names
+
+  Retrieves the current user's access unit names as a JSON array.
+
+  **Note:** This is a "self-service" endpoint that does not require admin permissions.
+
+  ## Response
+
+  Returns a JSON array string of access unit names (200 OK)
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - **No special permissions required** (self-service endpoint)
+
+  ## Use Cases
+
+  - Display user-friendly access unit names in dropdowns
+  - Show accessible units in UI
+  - Generate user permission reports
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a string (JSON array)", function() {
+    expect(res.body).to.be.a('string');
+    expect(JSON.parse(res.body)).to.be.an('array');
+  });
+}

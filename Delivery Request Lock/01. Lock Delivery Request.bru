@@ -1,0 +1,55 @@
+meta {
+  name: 01. Lock Delivery Request
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{domain}}/deliveryRequest/lock?cisUserId={{cisUserId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Lock Delivery Request
+
+  Locks a delivery request to a specific user, preventing other users from accessing it.
+
+  ## Query Parameters
+
+  **cisUserId** (required, string): CIS user ID to lock the request to
+  - Format: "cis.user.XXXX-####"
+
+  **requestId** (required, string): The delivery request ID to lock
+
+  ## Response
+
+  Returns success (200 OK)
+
+  ## Error Responses
+
+  - **403 Forbidden**: User not authorized to access this request
+  - **404 Not Found**: Request does not exist
+  - **409 Conflict**: Request is already locked by another user
+
+  ## Authentication
+
+  Requires active session with access validation
+
+  ## Use Cases
+
+  - Lock request before starting download
+  - Prevent concurrent access by multiple users
+  - Ensure exclusive access during processing
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

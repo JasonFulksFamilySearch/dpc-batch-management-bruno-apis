@@ -1,0 +1,54 @@
+meta {
+  name: 03. Get Delivery Items for Batch
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{domain}}/devops/items?batchid={{batchId}}&requestid={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  batchid: {{batchId}}
+  requestid: {{requestId}}
+}
+
+docs {
+  ## Get Delivery Items for Batch
+
+  Retrieves delivery items for a specific batch, optionally filtered by request ID.
+
+  ## Query Parameters
+
+  **batchid** (required, string): The batch ID
+  - Note: lowercase parameter name
+
+  **requestid** (optional, string): Filter by delivery request ID
+  - Note: lowercase parameter name
+
+  ## Response
+
+  Returns an array of delivery item objects (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - DevOps troubleshooting
+  - Verify item creation for batches
+  - Debug delivery item issues
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

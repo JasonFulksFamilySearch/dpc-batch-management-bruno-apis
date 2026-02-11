@@ -1,0 +1,49 @@
+meta {
+  name: 03. Check if Locked
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{domain}}/deliveryRequest/lock/isLocked?requestId={{requestId}}&cisUserId={{cisUserId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+  cisUserId: {{cisUserId}}
+}
+
+docs {
+  ## Check if Locked
+
+  Checks whether a delivery request is currently locked.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to check
+
+  **cisUserId** (required, string): CIS user ID making the check
+  - Format: "cis.user.XXXX-####"
+
+  ## Response
+
+  Returns boolean (200 OK)
+  - `true`: Request is locked
+  - `false`: Request is not locked
+
+  ## Authentication
+
+  Requires active session with access validation
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a boolean", function() {
+    expect(res.body).to.be.a('boolean');
+  });
+}

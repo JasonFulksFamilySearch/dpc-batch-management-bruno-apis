@@ -1,0 +1,48 @@
+meta {
+  name: 01. Set Logging Level
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{domain}}/admin/logginglevel/DEBUG
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Set Logging Level
+
+  Changes the root logging level for the application.
+
+  ## Path Parameters
+
+  **newLoggingLevel** (required, string): New logging level to set
+  - Valid values: TRACE, DEBUG, INFO, WARN, ERROR, OFF
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Enable debug logging for troubleshooting
+  - Reduce log verbosity in production
+  - Dynamic log level adjustment without restart
+
+  ##  Notes
+
+  - Changes take effect immediately
+  - Affects all loggers unless overridden
+  - Resets on application restart
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

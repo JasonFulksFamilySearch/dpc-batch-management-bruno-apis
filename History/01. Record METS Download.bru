@@ -1,0 +1,52 @@
+meta {
+  name: 01. Record METS Download
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{domain}}/history/metsDownload?groupId=group-123&requestId={{requestId}}&cisUserId={{cisUserId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  groupId: group-123
+  requestId: {{requestId}}
+  cisUserId: {{cisUserId}}
+}
+
+docs {
+  ## Record METS Download
+
+  Records a METS file download event in the history.
+
+  ## Query Parameters
+
+  **groupId** (required, string): Group ID for the METS file
+
+  **requestId** (required, string): Delivery request ID
+
+  **cisUserId** (required, string): CIS user ID who downloaded the METS file
+  - Format: "cis.user.XXXX-####"
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Track METS file downloads
+  - Audit trail for metadata access
+  - Usage analytics
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

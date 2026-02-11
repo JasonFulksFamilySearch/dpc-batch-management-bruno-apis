@@ -1,0 +1,36 @@
+meta {
+  name: 10. Delete Batch
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{domain}}/batch?batchId={{batchId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  batchId: {{batchId}}
+  requestId: {{requestId}}
+}
+
+docs {
+  Deletes a batch by updating its state to MARKED_COMPLETE and marking the access unit as deleted.
+
+  **Query Parameters:**
+  - `batchId` (required) - Batch ID to delete
+  - `requestId` (required) - Request ID
+
+  **Note:** This doesn't physically delete the batch, but marks it as complete and deleted.
+}
+
+vars:pre-request {
+  batchId: 12345
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

@@ -1,0 +1,57 @@
+meta {
+  name: 15. Get Request with Failed Groups (v1 deprecated)
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{domain}}/deliveryRequest/failed?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Get Request with Failed Groups (v1 - DEPRECATED)
+
+  ⚠️ **DEPRECATED**: Use `/deliveryRequest/failed/v2` instead.
+  This legacy endpoint will be removed in a future release.
+
+  Returns a legacy v1 delivery request filtered to only include its failed groups
+  (batches with ERROR status). The access unit is returned as a **name** in the `requestFor` field.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to retrieve
+
+  ## Response
+
+  Returns a `DeliveryRequestFromClient` object (v1 schema) containing:
+  - **requestFor**: Access unit name (not ID)
+  - V1 enum types
+  - **groupIdList**: Only groups (batches) that have ERROR status
+  - All other request metadata
+
+  ## Error Responses
+
+  - **IllegalArgumentException**: Request ID not found
+
+  ## Migration Path
+
+  Use `/deliveryRequest/failed/v2` which returns `requestForAccessUnitId` (numeric ID) and v2 enums.
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains delivery request", function() {
+    expect(res.body).to.be.an('object');
+    expect(res.body.requestFor).to.be.a('string');
+    expect(res.body.groupIdList).to.be.an('array');
+  });
+}

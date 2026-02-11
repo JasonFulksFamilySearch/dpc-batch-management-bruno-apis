@@ -1,0 +1,52 @@
+meta {
+  name: 15. Mark Batch Ready
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{domain}}/batch/mark/ready?batchId={{batchId}}&requestId={{requestId}}&groupApid={{groupApid}}&metsS3Key={{metsS3Key}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  batchId: {{batchId}}
+  requestId: {{requestId}}
+  groupApid: {{groupApid}}
+  metsS3Key: {{metsS3Key}}
+  ~apid: {{apid}}
+  ~batchSize: 0
+}
+
+docs {
+  Marks a batch as ready for delivery (READY_FOR_DELIVERY state).
+  Used after batch packaging is complete.
+
+  **Query Parameters (all are part of MarkBatchReadyRequest):**
+  - `batchId` (required) - Batch ID
+  - `requestId` (required) - Request ID
+  - `groupApid` (required) - Group APID
+  - `metsS3Key` (required) - S3 key for the METS file
+  - `apid` (optional) - APID identifier
+  - `batchSize` (optional) - Size of the batch in bytes (default: 0)
+
+  **Note:** If batch is already finished, it won't be marked ready and
+  ERROR_CAUSE will be logged.
+
+  **Side Effects:**
+  - Updates batch state to READY_FOR_DELIVERY
+  - Updates delivery request status
+}
+
+vars:pre-request {
+  batchId: 12345
+  groupApid: group-apid-123
+  metsS3Key: path/to/mets.xml
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

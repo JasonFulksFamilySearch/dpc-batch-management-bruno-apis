@@ -1,0 +1,49 @@
+meta {
+  name: 02. Unlock Delivery Request
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{domain}}/deliveryRequest/lock/unlock?requestId={{requestId}}&cisUserId={{cisUserId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+  cisUserId: {{cisUserId}}
+}
+
+docs {
+  ## Unlock Delivery Request
+
+  Unlocks a delivery request, making it available for other users.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to unlock
+
+  **cisUserId** (required, string): CIS user ID releasing the lock
+  - Format: "cis.user.XXXX-####"
+
+  ## Response
+
+  Returns success (200 OK)
+
+  ## Authentication
+
+  Requires active session with access validation
+
+  ## Use Cases
+
+  - Release lock after completing download
+  - Cancel download and allow others to access
+  - Clean up abandoned locks
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

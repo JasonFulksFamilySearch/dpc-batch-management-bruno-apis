@@ -1,0 +1,51 @@
+meta {
+  name: 16. Get Request with Failed Groups (v2)
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{domain}}/deliveryRequest/failed/v2?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Get Request with Failed Groups (v2)
+
+  Returns a v2 delivery request filtered to only include its failed groups
+  (batches with ERROR status). The access unit is returned as a numeric **ID**
+  in the `requestForAccessUnitId` field.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to retrieve
+
+  ## Response
+
+  Returns a `DeliveryRequestFromClientV2` object containing:
+  - **requestForAccessUnitId**: Access unit numeric ID
+  - V2 enum types
+  - **groupIdList**: Only groups (batches) that have ERROR status
+  - All other request metadata
+
+  ## Error Responses
+
+  - **IllegalArgumentException**: Request ID not found
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains delivery request", function() {
+    expect(res.body).to.be.an('object');
+    expect(res.body.requestForAccessUnitId).to.be.a('number');
+    expect(res.body.groupIdList).to.be.an('array');
+  });
+}

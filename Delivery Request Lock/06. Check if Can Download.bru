@@ -1,0 +1,61 @@
+meta {
+  name: 06. Check if Can Download
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{domain}}/deliveryRequest/lock/canDownload?cisUserId={{cisUserId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Check if Can Download
+
+  Checks whether a user can download a delivery request (either lock is open or user holds the lock).
+
+  ## Query Parameters
+
+  **cisUserId** (required, string): CIS user ID to check download permission for
+  - Format: "cis.user.XXXX-####"
+
+  **requestId** (required, string): The delivery request ID to check
+
+  ## Response
+
+  Returns boolean (200 OK)
+  - `true`: User can download (request is unlocked OR user holds the lock)
+  - `false`: User cannot download (locked by another user OR access validation failed)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Notes
+
+  - Returns false if access validation fails
+  - This is the recommended endpoint to check before allowing download
+  - Combines lock check with access permission validation
+
+  ## Use Cases
+
+  - Gate download buttons in UI
+  - Validate download permission before streaming
+  - Check if user needs to request lock release
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a boolean", function() {
+    expect(res.body).to.be.a('boolean');
+  });
+}

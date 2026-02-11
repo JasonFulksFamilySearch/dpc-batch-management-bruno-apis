@@ -1,0 +1,50 @@
+meta {
+  name: 05. Get Access Unit ID by Name
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{domain}}/accessUnit/findId/Access Unit Name
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get Access Unit ID by Name
+
+  Retrieves the numeric ID of an access unit by its name.
+
+  ## Path Parameters
+
+  **accessUnitName** (required, string): The access unit name to look up
+
+  ## Response
+
+  Returns the access unit ID as a number (200 OK)
+
+  ## Error Responses
+
+  - **404 Not Found**: Access unit with that name does not exist
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+
+  ## Notes
+
+  - Name matching is exact (case-sensitive)
+  - Spaces in names should be URL-encoded or the path parameter will handle them
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a number", function() {
+    expect(res.body).to.be.a('number');
+  });
+}

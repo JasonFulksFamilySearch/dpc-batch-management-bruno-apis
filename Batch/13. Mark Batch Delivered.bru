@@ -1,0 +1,55 @@
+meta {
+  name: 13. Mark Batch Delivered
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{domain}}/batch/complete/{{batchId}}?cisUserId={{cisUserId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  ~requestId: {{requestId}}
+}
+
+docs {
+  Marks the batch with the given batch ID as delivered (DELIVERED state).
+  The batch must be associated with the cisUserId provided.
+  This results in:
+  - Batch state updated to DELIVERED in the database
+  - S3 batch deliverable being deleted
+  - For ARK requests: If all batches are delivered, sends DOWNLOAD_COMPLETE notification
+
+  **Path Parameters:**
+  - `batchId` (required) - Batch ID
+
+  **Query Parameters:**
+  - `cisUserId` (required) - CIS user ID completing the batch
+  - `requestId` (optional) - Request ID
+
+  **Returns:** Success message
+
+  **Responses:**
+  - 200 OK - Batch successfully marked delivered
+  - 403 Forbidden - Batch not tied to cisUserId
+  - 404 Not Found - Batch not found
+
+  **Used by:** Delivery Service
+}
+
+vars:pre-request {
+  batchId: 12345
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return success message", function() {
+    expect(res.body).to.include("Successfully completed batch");
+  });
+}

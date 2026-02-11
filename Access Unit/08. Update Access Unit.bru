@@ -1,0 +1,60 @@
+meta {
+  name: 08. Update Access Unit
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{domain}}/accessUnit/update?accessUnitId={{accessUnitId}}&newName=Updated Name&custodianId={{cisUserId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  accessUnitId: {{accessUnitId}}
+  newName: Updated Name
+  custodianId: {{cisUserId}}
+}
+
+docs {
+  ## Update Access Unit
+
+  Updates an existing access unit's name and/or custodian.
+
+  ## Query Parameters
+
+  **accessUnitId** (required, number): ID of the access unit to update
+
+  **newName** (required, string): New name for the access unit
+  - Must be unique (different from other access units)
+
+  **custodianId** (optional, string): New custodian CIS user ID
+  - Format: CIS user ID (e.g., "cis.user.XXXX-####")
+  - Can be omitted to leave custodian unchanged
+
+  ## Response
+
+  Returns success message as text (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid request parameters
+  - **404 Not Found**: Access unit does not exist
+  - **409 Conflict**: New name already used by another access unit
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

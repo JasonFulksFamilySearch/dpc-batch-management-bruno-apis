@@ -1,0 +1,41 @@
+meta {
+  name: 03. Ping Test
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{domain}}/admin/ping
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Ping Test
+
+  Simple ping endpoint for testing connectivity and authentication.
+
+  ## Response
+
+  Returns plain text "Successful ping" (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Verify API connectivity
+  - Test authentication
+  - Health check from external systems
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is successful ping", function() {
+    expect(res.body).to.equal('Successful ping');
+  });
+}

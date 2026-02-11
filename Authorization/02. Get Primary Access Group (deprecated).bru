@@ -1,0 +1,41 @@
+meta {
+  name: 02. Get Primary Access Group (deprecated)
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{domain}}/authorize/primaryAccessGroup
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get Primary Access Group (DEPRECATED)
+
+  ⚠️ **DEPRECATED as of 2025.07.12**: Use `/cisUser/me/primaryAccessUnit` instead.
+
+  Gets the current user's primary access group/unit name as plain text.
+
+  ## Response
+
+  Returns primary access group name as text (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Migration Path
+
+  Use `/cisUser/me/primaryAccessUnit` for the same functionality.
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a string", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

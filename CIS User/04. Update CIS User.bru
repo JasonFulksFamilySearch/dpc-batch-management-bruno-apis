@@ -1,0 +1,70 @@
+meta {
+  name: 04. Update CIS User
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{domain}}/cisUser/update
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "cisUserId": "{{cisUserId}}",
+    "displayName": "Updated Test User",
+    "email": "updated.testuser@example.com",
+    "primaryAccessUnitId": 1
+  }
+}
+
+docs {
+  ## Update CIS User
+
+  Updates an existing CIS user's information.
+
+  ## Request Body Fields
+
+  **cisUserId** (required, string): CIS user identifier to update
+  - Format: "cis.user.XXXX-####" or other valid CIS ID format
+
+  **displayName** (optional, string): Updated display name
+  - Maximum length: 255 characters
+
+  **email** (optional, string): Updated email address
+  - Must be valid email format
+
+  **primaryAccessUnitId** (optional, number): Updated primary access unit ID
+  - Must be an existing access unit
+
+  ## Response
+
+  Returns success message as text (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid request body
+  - **404 Not Found**: CIS user does not exist
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+
+  ## Notes
+
+  - Only include fields you want to update
+  - cisUserId is required to identify the user but cannot be changed
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

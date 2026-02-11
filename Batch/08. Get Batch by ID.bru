@@ -1,0 +1,59 @@
+meta {
+  name: 08. Get Batch by ID
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{domain}}/batch/{{batchId}}?cisUserId={{cisUserId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+  ~requestId: {{requestId}}
+}
+
+docs {
+  Gets the batch with the given batchId. The batch will only be returned if
+  it is tied to the provided cisUserId.
+
+  **Path Parameters:**
+  - `batchId` (required) - Batch ID
+
+  **Query Parameters:**
+  - `cisUserId` (required) - CIS user ID of the user asking about the batch
+  - `requestId` (optional) - Request ID (helps narrow down results if multiple batches exist with same batchId)
+
+  **Returns:** Batch object
+
+  **Responses:**
+  - 200 OK - Batch found and belongs to cisUserId
+  - 403 Forbidden - Batch not tied to cisUserId
+  - 404 Not Found - Batch not found
+  - 422 Unprocessable Entity - More than one batch found (set requestId to narrow results)
+
+  **Used by:** Delivery Service
+}
+
+vars:pre-request {
+  batchId: 12345
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return Batch object", function() {
+    expect(res.body).to.have.property('batchId');
+    expect(res.body).to.have.property('requestId');
+    expect(res.body).to.have.property('state');
+    expect(res.body).to.have.property('accessUnitId');
+  });
+
+  test("batchId should match requested batch", function() {
+    expect(res.body.batchId).to.equal(bru.getVar("batchId"));
+  });
+}

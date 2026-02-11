@@ -1,0 +1,58 @@
+meta {
+  name: 09. Delete Access Unit
+  type: http
+  seq: 9
+}
+
+delete {
+  url: {{domain}}/accessUnit/delete?accessUnitId={{accessUnitId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  accessUnitId: {{accessUnitId}}
+}
+
+docs {
+  ## Delete Access Unit
+
+  Deletes an existing access unit by its ID.
+
+  **⚠️ Warning:** This is a destructive operation. Ensure the access unit is no longer needed.
+
+  ## Query Parameters
+
+  **accessUnitId** (required, number): ID of the access unit to delete
+
+  ## Response
+
+  Returns success message as text (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid request parameters
+  - **404 Not Found**: Access unit does not exist
+  - **409 Conflict**: Access unit is still in use (has associated users or delivery requests)
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+
+  ## Notes
+
+  - Cannot delete access units that are currently in use
+  - Consider revoking all user access first before deletion
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

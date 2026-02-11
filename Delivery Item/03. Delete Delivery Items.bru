@@ -1,0 +1,50 @@
+meta {
+  name: 03. Delete Delivery Items
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{domain}}/deliveryitem/list?batchId={{batchId}}&requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  batchId: {{batchId}}
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Delete Delivery Items
+
+  Deletes all delivery items for a specific batch and request.
+
+  **⚠️ Warning:** This is a destructive operation that removes all items for the batch.
+
+  ## Query Parameters
+
+  **batchId** (required, string): The batch ID to delete items from
+
+  **requestId** (required, string): The delivery request ID
+
+  ## Response
+
+  Returns void (200 OK or 204 No Content)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - Clean up after batch completion
+  - Reset batch items before re-processing
+  - Remove items from canceled batches
+}
+
+tests {
+  test("Status is 200 or 204", function() {
+    expect([200, 204]).to.include(res.status);
+  });
+}

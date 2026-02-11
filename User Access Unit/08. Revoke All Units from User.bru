@@ -1,0 +1,61 @@
+meta {
+  name: 08. Revoke All Units from User
+  type: http
+  seq: 8
+}
+
+delete {
+  url: {{domain}}/userAccessUnit/revokeAllUnitsFromUser
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "cisUserId": "{{cisUserId}}"
+  }
+}
+
+docs {
+  ## Revoke All Units from User
+
+  Revokes ALL access units from a specific user.
+
+  **⚠️ Warning:** This is a bulk operation removing all of the user's access units.
+
+  ## Request Body
+
+  **cisUserId** (required, string): CIS user ID to revoke all access from
+  - Format: "cis.user.XXXX-####"
+
+  ## Response
+
+  Returns success message (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid request body
+  - **404 Not Found**: User does not exist
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+
+  ## Use Cases
+
+  - Preparing to delete a user
+  - Offboarding process
+  - Emergency access revocation
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

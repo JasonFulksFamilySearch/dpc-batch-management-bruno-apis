@@ -1,0 +1,46 @@
+meta {
+  name: 01. Get Orphaned and Inactive Users
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{domain}}/audit/users/orphaned-and-inactive
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Get Orphaned and Inactive Users
+
+  Returns a list of users who are either:
+  - **Orphaned**: Have no access units assigned
+  - **Inactive**: Have no activity in the last 6 months
+
+  ## Response
+
+  Returns an array of user objects (200 OK)
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - `AdministerDeliveryUsersPerm` TARS permission
+
+  ## Use Cases
+
+  - Identify users for cleanup or offboarding
+  - Security audits
+  - License optimization
+  - Access control reviews
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

@@ -1,0 +1,55 @@
+meta {
+  name: 20. Clear Single Batch Error
+  type: http
+  seq: 20
+}
+
+post {
+  url: {{domain}}/deliveryRequest/batch/clear/errors
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "batchId": "{{batchId}}",
+    "requestId": "{{requestId}}"
+  }
+}
+
+docs {
+  ## Clear Single Batch Error
+
+  Clears the error status for a specific batch. Sets the batch's error status to OK
+  and clears its error message.
+
+  **Note:** This also triggers an asynchronous request status update.
+
+  ## Request Body Fields
+
+  **batchId** (required, string): The batch ID to clear errors for
+
+  **requestId** (required, string): The delivery request ID that owns this batch
+
+  Both fields are required. If either is missing, the request will fail with 400 Bad Request.
+
+  ## Response
+
+  Returns empty body (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Missing batchId or requestId in request body
+
+  ## Side Effects
+
+  - Updates the specified batch's error status to OK
+  - Clears the batch's error message
+  - Triggers async status recalculation for the request
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

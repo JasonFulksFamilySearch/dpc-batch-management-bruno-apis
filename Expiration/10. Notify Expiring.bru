@@ -1,0 +1,59 @@
+meta {
+  name: 10. Notify Expiring
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{domain}}/expiration/notify-expiring?daysTillExpire=30
+  body: none
+  auth: inherit
+}
+
+params:query {
+  daysTillExpire: 30
+}
+
+docs {
+  ## Notify Expiring
+
+  Asynchronously sends notifications about batches expiring soon.
+
+  ## Query Parameters
+
+  **daysTillExpire** (optional, number): Number of days to look ahead for expiring batches
+  - Default: 30
+
+  ## Response
+
+  Returns 202 Accepted immediately
+
+  ## Authentication
+
+  Requires active session
+
+  ## Side Effects
+
+  - Starts background notification process
+  - Sends notifications to affected users
+  - Processes batches expiring within specified days
+
+  ## Notes
+
+  - Process runs asynchronously
+  - 202 Accepted means notification started, not completed
+  - Check logs for notification delivery status
+  - May send multiple notifications per user if they have multiple expiring batches
+
+  ## Use Cases
+
+  - Proactive expiration alerts
+  - Scheduled reminder jobs
+  - User engagement for renewal
+}
+
+tests {
+  test("Status is 202 Accepted", function() {
+    expect(res.status).to.equal(202);
+  });
+}

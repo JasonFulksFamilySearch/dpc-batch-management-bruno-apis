@@ -1,0 +1,52 @@
+meta {
+  name: 03. Start DB-S3 Audit
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{domain}}/audit/dbS3/start
+  body: none
+  auth: inherit
+}
+
+docs {
+  ## Start DB-S3 Audit
+
+  Starts an asynchronous audit process for DELIVERED batches with PENDING audit state.
+  This verifies consistency between database records and S3 storage.
+
+  ## Response
+
+  Returns success status (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Side Effects
+
+  - Starts background audit process
+  - Processes batches with DELIVERED state and PENDING audit state
+  - Verifies database-S3 consistency
+  - Updates audit states based on findings
+
+  ## Use Cases
+
+  - Verify data integrity
+  - Identify missing or orphaned S3 files
+  - Database-storage reconciliation
+  - Compliance audits
+
+  ## Notes
+
+  - Process runs asynchronously
+  - Check status with `/audit/dbS3/status`
+  - May take significant time for large datasets
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

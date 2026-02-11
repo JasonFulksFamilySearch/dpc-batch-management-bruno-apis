@@ -1,0 +1,51 @@
+meta {
+  name: 22. Update Note
+  type: http
+  seq: 22
+}
+
+post {
+  url: {{domain}}/deliveryRequest/update/note?requestId={{requestId}}
+  body: text
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+body:text {
+  Updated note for this delivery request with additional context
+}
+
+docs {
+  ## Update Note
+
+  Updates the free-form note field associated with a delivery request.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to update
+
+  ## Request Body
+
+  Plain text containing the new note
+  - If the body is null or empty, the note will be cleared (set to empty string)
+  - Maximum length constraints may apply (check database schema)
+
+  ## Response
+
+  Returns void (200 OK)
+
+  ## Notes
+
+  - Sending null or omitting the body will clear the note
+  - The note is stored as-is without additional processing
+  - Use this field for free-form comments or tracking information
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

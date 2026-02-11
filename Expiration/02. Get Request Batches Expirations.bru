@@ -1,0 +1,49 @@
+meta {
+  name: 02. Get Request Batches Expirations
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{domain}}/expiration/request/batches?requestId={{requestId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+docs {
+  ## Get Request Batches Expirations
+
+  Retrieves expiration dates for all active batches in a request as a map.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID
+
+  ## Response
+
+  Returns a map of batch IDs to expiration dates (200 OK)
+  - Key: batch ID (string)
+  - Value: expiration date or null
+
+  ## Error Responses
+
+  - **404 Not Found**: No active batches found for request
+
+  ## Authentication
+
+  Requires active session
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an object (map)", function() {
+    expect(res.body).to.be.an('object');
+  });
+}

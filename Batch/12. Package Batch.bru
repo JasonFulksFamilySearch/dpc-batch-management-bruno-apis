@@ -1,0 +1,54 @@
+meta {
+  name: 12. Package Batch
+  type: http
+  seq: 12
+}
+
+put {
+  url: {{domain}}/batch/package
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "externalId": "batch-group-external-id",
+    "projectId": "project-12345",
+    "apid": "apid-67890",
+    "name": "Batch Group Name",
+    "description": "Batch description",
+    "parent": null,
+    "deliveryItems": []
+  }
+}
+
+docs {
+  Tells the BMS that a given batch is ready for packaging.
+  This creates a batch entry in the database and enqueues a PackageBatchRequest
+  on the PackageBatch queue.
+
+  **Request Body:** Group object (from Metis workflow action)
+
+  **Group Object Properties:**
+  - `externalId` - External ID of the group
+  - `projectId` - RMS Project ID
+  - `apid` - APID identifier
+  - `name` - Group name
+  - `description` - Group description
+  - `parent` - Parent group (if any)
+  - `deliveryItems` - Array of delivery items in the batch
+
+  **Returns:** Success message
+
+  **Used by:** Fulfillment Service
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return success message", function() {
+    expect(res.body).to.include("Successfully enqueued batch for packaging");
+  });
+}

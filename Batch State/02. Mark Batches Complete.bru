@@ -1,0 +1,68 @@
+meta {
+  name: 02. Mark Batches Complete
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{domain}}/batch-state/markComplete
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "batchIds": ["{{batchId}}"],
+    "requestId": "{{requestId}}",
+    "cisUserId": "{{cisUserId}}"
+  }
+}
+
+docs {
+  ## Mark Batches Complete
+
+  Marks batches as complete by setting their state to MARKED_COMPLETE. This also deletes the S3
+  batch deliverable. Used by the Delivery Service to indicate the user has finished with these batches.
+
+  **Note:** Batches are enqueued for processing asynchronously.
+
+  **Difference from Complete Batches:** This sets state to MARKED_COMPLETE instead of DELIVERED,
+  indicating user acknowledgment of completion.
+
+  ## Request Body Fields
+
+  **batchIds** (required, array): Array of batch IDs to mark complete
+  - Only batches associated with the provided cisUserId will be updated
+
+  **requestId** (required, string): The delivery request ID these batches belong to
+
+  **cisUserId** (required, string): CIS user ID of the user marking batches complete
+  - Format: "cis.user.XXXX-####"
+  - Only batches associated with this user will be affected
+
+  ## Response
+
+  Returns "Successfully enqueued batches" (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid BatchStateRequest (validation failed)
+    - Missing required fields
+    - Empty arrays where data is required
+
+  ## Side Effects
+
+  - Updates batch state to MARKED_COMPLETE in database
+  - Deletes S3 batch deliverable files
+  - Used by Delivery Service
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response confirms success", function() {
+    expect(res.body).to.equal('Successfully enqueued batches');
+  });
+}

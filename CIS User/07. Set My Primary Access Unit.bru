@@ -1,0 +1,61 @@
+meta {
+  name: 07. Set My Primary Access Unit
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{domain}}/cisUser/me/primaryAccessUnit?accessUnitName=New Primary Unit
+  body: none
+  auth: inherit
+}
+
+params:query {
+  accessUnitName: New Primary Unit
+}
+
+docs {
+  ## Set My Primary Access Unit
+
+  Sets the current user's primary access unit by name.
+
+  **Note:** This is a "self-service" endpoint that does not require admin permissions.
+
+  ## Query Parameters
+
+  **accessUnitName** (required, string): Name of the access unit to set as primary
+  - Must be an existing access unit
+  - User must have access to this access unit
+
+  ## Response
+
+  Returns success message as plain text (200 OK)
+
+  ## Error Responses
+
+  - **400 Bad Request**: Invalid access unit name
+  - **401 Unauthorized**: No active session
+  - **403 Forbidden**: User does not have access to the specified access unit
+  - **404 Not Found**: Access unit does not exist
+
+  ## Authentication
+
+  Requires:
+  - Active session (Bearer token)
+  - **No special permissions required** (self-service endpoint)
+
+  ## Notes
+
+  - User can only set primary access unit to one they have access to
+  - Primary access unit is used as the default for new delivery requests
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+  });
+}

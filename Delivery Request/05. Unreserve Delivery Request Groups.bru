@@ -1,0 +1,53 @@
+meta {
+  name: 05. Unreserve Delivery Request Groups
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{domain}}/deliveryRequest/unreserve/groups
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "requestId": "{{requestId}}",
+    "batchIds": ["batch-id-1", "batch-id-2"]
+  }
+}
+
+docs {
+  ## Unreserve Delivery Request Groups
+
+  Unreserves specific batches (groups) for a delivery request, making them available for
+  other users or reservations.
+
+  ## Request Body
+
+  The body should be a `BatchStateRequest` object:
+
+  **requestId** (required, string): The delivery request ID
+
+  **batchIds** (required, array): Array of batch IDs to unreserve
+  - Each batch will have its reservation released
+
+  ## Response
+
+  Returns "Received unreserve delivery request: {details}" on success (200 OK)
+
+  ## Error Responses
+
+  - **500 Internal Server Error**: Unexpected error during unreservation
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains success message", function() {
+    expect(res.body).to.be.a('string');
+    expect(res.body).to.include('Received unreserve delivery request');
+  });
+}

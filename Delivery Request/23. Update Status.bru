@@ -1,0 +1,65 @@
+meta {
+  name: 23. Update Status
+  type: http
+  seq: 23
+}
+
+post {
+  url: {{domain}}/deliveryRequest/update/status?requestId={{requestId}}
+  body: text
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+body:text {
+  IN_PROGRESS
+}
+
+docs {
+  ## Update Status
+
+  Manually updates the status of a delivery request to a specified value.
+
+  **⚠️ Warning:** This directly sets the status without validation against batch states.
+  For automatic status calculation, use `/deliveryRequest/update/recalculateRequestStatus` instead.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to update
+
+  ## Request Body
+
+  Plain text containing the new status value (must match a valid `RequestStatus` enum value)
+
+  Valid status values include:
+  - IN_PROGRESS
+  - COMPLETED
+  - FAILED
+  - PAUSED
+  - CANCELLED
+  - (and other values from the RequestStatus enum)
+
+  ## Response
+
+  Returns void (200 OK)
+
+  ## Error Responses
+
+  - **IllegalArgumentException**: Invalid status value
+    - Response includes list of allowed values from RequestStatus enum
+
+  ## Notes
+
+  - Status must exactly match a RequestStatus enum value (case-sensitive)
+  - This is a manual override - use with caution
+  - Consider using recalculateRequestStatus for automatic status determination
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

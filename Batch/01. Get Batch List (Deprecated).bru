@@ -1,0 +1,36 @@
+meta {
+  name: 01. Get Batch List (Deprecated)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{domain}}/batch/list?cisUserId={{cisUserId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  cisUserId: {{cisUserId}}
+}
+
+docs {
+  **DEPRECATED** - This endpoint will be removed in a future release. Use `/batch/page` instead.
+
+  Gets the list of batches that are ready for delivery for a given cisUserId.
+  If none are available, the "batch_list" value will be an empty list.
+  The list is ordered by batchId.
+
+  **Used by:** Delivery Service
+}
+
+tests {
+  test("should return 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return BatchList object", function() {
+    expect(res.body).to.have.property('batch_list');
+    expect(res.body.batch_list).to.be.an('array');
+  });
+}

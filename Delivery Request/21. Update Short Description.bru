@@ -1,0 +1,50 @@
+meta {
+  name: 21. Update Short Description
+  type: http
+  seq: 21
+}
+
+post {
+  url: {{domain}}/deliveryRequest/update/shortDescription?requestId={{requestId}}
+  body: text
+  auth: inherit
+}
+
+params:query {
+  requestId: {{requestId}}
+}
+
+body:text {
+  Updated short description for this delivery request
+}
+
+docs {
+  ## Update Short Description
+
+  Updates the short description field of an existing delivery request.
+
+  ## Query Parameters
+
+  **requestId** (required, string): The delivery request ID to update
+
+  ## Request Body
+
+  Plain text containing the new short description
+  - If the body is null or empty, the short description will be cleared (set to empty string)
+  - Maximum length constraints may apply (check database schema)
+
+  ## Response
+
+  Returns void (200 OK)
+
+  ## Notes
+
+  - Sending null or omitting the body will clear the short description
+  - The description is stored as-is without additional processing
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+}

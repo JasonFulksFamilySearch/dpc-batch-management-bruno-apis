@@ -1,0 +1,51 @@
+meta {
+  name: 01. List Delivery Requests
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{domain}}/devops/requests?accessUnitName=Test Unit
+  body: none
+  auth: inherit
+}
+
+params:query {
+  accessUnitName: Test Unit
+}
+
+docs {
+  ## List Delivery Requests
+
+  Lists all delivery requests with optional filtering by access unit.
+
+  ## Query Parameters
+
+  **accessUnitName** (optional, string): Filter by access unit name
+
+  **accessgroup** (optional, string): Legacy parameter - filter by access group
+
+  ## Response
+
+  Returns an array of delivery request objects (200 OK)
+
+  ## Authentication
+
+  Requires active session
+
+  ## Use Cases
+
+  - DevOps monitoring and troubleshooting
+  - List all requests for an access unit
+  - System health checks
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

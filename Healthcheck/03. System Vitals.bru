@@ -1,0 +1,96 @@
+meta {
+  name: 03. System Vitals
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{domain}}/healthcheck/vitals
+  body: none
+  auth: none
+}
+
+docs {
+  ## System Vitals
+
+  Returns detailed system health information including build version, deployment time,
+  system load, heap memory usage, and SQS queue sizes.
+
+  This endpoint is also called on a schedule (every 3 minutes) to log vitals automatically.
+
+  ## Response
+
+  Returns multi-line plain text with health status and metrics:
+
+  ```
+  HEALTHY
+  build.version=1.2.3
+  deploy.timestamp=2026-02-10T12:00:00Z
+  system.load.average=2.5
+  heap.free.gb=1.234
+  heap.in.use.gb=2.345
+  heap.current.size.gb=3.456
+  heap.max.gb=4.000
+  package.batch.queue.size=42
+  ```
+
+  ## Health Determination
+
+  The first line will be either "HEALTHY" or "SICK" based on:
+  - **System load**: Unhealthy if >= 10.0
+  - **Heap usage**: Unhealthy if heap is at max size and >= 95% in use
+  - **Queue access**: Unhealthy if SQS queue size cannot be retrieved
+
+  ## Metrics Included
+
+  **build.version**: Application version from build properties
+
+  **deploy.timestamp**: ISO-8601 timestamp of deployment
+
+  **system.load.average**: System load average (1-minute)
+  - Threshold: >= 10.0 indicates unhealthy
+
+  **heap.free.gb**: Free heap memory in GB
+
+  **heap.in.use.gb**: Used heap memory in GB
+
+  **heap.current.size.gb**: Current heap size in GB
+
+  **heap.max.gb**: Maximum heap size in GB
+
+  **package.batch.queue.size**: Number of messages in the package batch internal queue
+  - Returns -1 if unable to retrieve
+
+  ## Use Cases
+
+  - Detailed system monitoring
+  - Performance analysis
+  - Memory usage tracking
+  - Queue depth monitoring
+  - Automated health checks
+}
+
+tests {
+  test("Status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response contains health status", function() {
+    expect(res.body).to.be.a('string');
+    expect(res.body).to.match(/^(HEALTHY|SICK)/);
+  });
+
+  test("Response contains build version", function() {
+    expect(res.body).to.include('build.version=');
+  });
+
+  test("Response contains heap metrics", function() {
+    expect(res.body).to.include('heap.free.gb=');
+    expect(res.body).to.include('heap.in.use.gb=');
+    expect(res.body).to.include('heap.max.gb=');
+  });
+
+  test("Response contains queue size", function() {
+    expect(res.body).to.include('package.batch.queue.size=');
+  });
+}
